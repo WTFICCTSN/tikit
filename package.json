@@ -1,5 +1,5 @@
 {
-  "name": "TICKIT",
+  "name": "TIKIT-V2-9985",
   "private": true,
   "description": "",
   "license": "",
@@ -40,15 +40,13 @@
     "bcryptjs": "^2.4.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "remix": "^1.4.3",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
     "@faker-js/faker": "^6.1.1",
     "@remix-run/dev": "^1.4.3",
     "@remix-run/eslint-config": "^1.4.3",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
-    "@tailwindcss/forms": "^0.5.1",
-    "@tailwindcss/typography": "^0.5.2",
     "@testing-library/cypress": "^8.0.2",
     "@testing-library/dom": "^8.12.0",
     "@testing-library/jest-dom": "^5.16.3",

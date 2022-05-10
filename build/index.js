@@ -70,7 +70,7 @@ function handleRequest(request, responseStatusCode, responseHeaders, remixContex
   });
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/root.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/root.tsx
 var root_exports = {};
 __export(root_exports, {
   default: () => App,
@@ -82,7 +82,7 @@ var import_node2 = require("@remix-run/node");
 var import_react2 = require("@remix-run/react");
 
 // app/styles/tailwind.css
-var tailwind_default = "/build/_assets/tailwind-FLUKLFTK.css";
+var tailwind_default = "/build/_assets/tailwind-TOTVRZRS.css";
 
 // app/session.server.ts
 var import_node = require("@remix-run/node");
@@ -207,7 +207,7 @@ async function logout(request) {
   });
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/root.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/root.tsx
 var links = () => {
   return [{ rel: "stylesheet", href: tailwind_default }];
 };
@@ -230,7 +230,7 @@ function App() {
   }, /* @__PURE__ */ React.createElement(import_react2.Outlet, null), /* @__PURE__ */ React.createElement(import_react2.ScrollRestoration, null), /* @__PURE__ */ React.createElement(import_react2.Scripts, null), /* @__PURE__ */ React.createElement(import_react2.LiveReload, null)));
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/healthcheck.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/healthcheck.tsx
 var healthcheck_exports = {};
 __export(healthcheck_exports, {
   loader: () => loader2
@@ -253,7 +253,7 @@ var loader2 = async ({ request }) => {
   }
 };
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/logout.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/logout.tsx
 var logout_exports = {};
 __export(logout_exports, {
   action: () => action,
@@ -267,7 +267,7 @@ var loader3 = async () => {
   return (0, import_node3.redirect)("/");
 };
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/index.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/index.tsx
 var routes_exports = {};
 __export(routes_exports, {
   default: () => Index
@@ -313,7 +313,7 @@ function validateEmail(email) {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/index.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/index.tsx
 function Index() {
   const user = useOptionalUser();
   return /* @__PURE__ */ React.createElement("main", {
@@ -429,7 +429,7 @@ function Index() {
   })))))));
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/login.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/login.tsx
 var login_exports = {};
 __export(login_exports, {
   action: () => action2,
@@ -565,7 +565,7 @@ function LoginPage() {
   }, "Sign up"))))));
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/notes.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/notes.tsx
 var notes_exports = {};
 __export(notes_exports, {
   default: () => NotesPage,
@@ -616,7 +616,7 @@ function deleteNote({
   });
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/notes.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/notes.tsx
 var loader5 = async ({ request }) => {
   const userId = await requireUserId(request);
   const noteListItems = await getNoteListItems({ userId });
@@ -658,7 +658,7 @@ function NotesPage() {
   }, /* @__PURE__ */ React.createElement(import_react7.Outlet, null))));
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/notes/$noteId.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/notes/$noteId.tsx
 var noteId_exports = {};
 __export(noteId_exports, {
   CatchBoundary: () => CatchBoundary,
@@ -712,7 +712,7 @@ function CatchBoundary() {
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/notes/index.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/notes/index.tsx
 var notes_exports2 = {};
 __export(notes_exports2, {
   default: () => NoteIndexPage
@@ -725,7 +725,7 @@ function NoteIndexPage() {
   }, "create a new note."));
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/notes/new.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/notes/new.tsx
 var new_exports = {};
 __export(new_exports, {
   action: () => action4,
@@ -800,7 +800,7 @@ function NewNotePage() {
   }, "Save")));
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/TIKIT/app/routes/join.tsx
+// route:/home/wtficctsn/PhpstormProjects/TIKIT-V2/app/routes/join.tsx
 var join_exports = {};
 __export(join_exports, {
   action: () => action5,
@@ -927,7 +927,7 @@ function Join() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { "version": "6ccf7260", "entry": { "module": "/build/entry.client-MGIOLQAR.js", "imports": ["/build/_shared/chunk-INE3ISYA.js", "/build/_shared/chunk-6BO74FWO.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-G7W2X6GO.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/healthcheck": { "id": "routes/healthcheck", "parentId": "root", "path": "healthcheck", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/healthcheck-HJZRS2YA.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-2C7MES46.js", "imports": ["/build/_shared/chunk-22FC62OO.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/join": { "id": "routes/join", "parentId": "root", "path": "join", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/join-GRNSK5MK.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-22FC62OO.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-QRQEEJEN.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-22FC62OO.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-FU3FJJZC.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/notes": { "id": "routes/notes", "parentId": "root", "path": "notes", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/notes-KO3QQYTE.js", "imports": ["/build/_shared/chunk-22FC62OO.js", "/build/_shared/chunk-2YJZUK4K.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/notes/$noteId": { "id": "routes/notes/$noteId", "parentId": "routes/notes", "path": ":noteId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/notes/$noteId-O2YJXHWO.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/notes/index": { "id": "routes/notes/index", "parentId": "routes/notes", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/notes/index-GJCMRGET.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/notes/new": { "id": "routes/notes/new", "parentId": "routes/notes", "path": "new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/notes/new-Z66YHLC5.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-6CCF7260.js" };
+var assets_manifest_default = { "version": "2413e276", "entry": { "module": "/build/entry.client-CTZHR2LU.js", "imports": ["/build/_shared/chunk-LFKUBUPM.js", "/build/_shared/chunk-6BO74FWO.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-PMCD7WUA.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/healthcheck": { "id": "routes/healthcheck", "parentId": "root", "path": "healthcheck", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/healthcheck-G7SK47IB.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-F5TD4EFV.js", "imports": ["/build/_shared/chunk-PVLJMNHA.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/join": { "id": "routes/join", "parentId": "root", "path": "join", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/join-J4UV5LR2.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-3ZD4WR5J.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-YJMPTCNV.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/notes": { "id": "routes/notes", "parentId": "root", "path": "notes", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/notes-QUC3DWHG.js", "imports": ["/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-2YJZUK4K.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/notes/$noteId": { "id": "routes/notes/$noteId", "parentId": "routes/notes", "path": ":noteId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/notes/$noteId-EQR7Q6LD.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/notes/index": { "id": "routes/notes/index", "parentId": "routes/notes", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/notes/index-S62RQI6M.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/notes/new": { "id": "routes/notes/new", "parentId": "routes/notes", "path": "new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/notes/new-5DAP6MQ4.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-2413E276.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var entry = { module: entry_server_exports };

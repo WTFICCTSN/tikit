@@ -1,4 +1,4 @@
-app = "TICKIT-3701"
+app = "TIKIT-V2-9985"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = [ ]
