@@ -7,32 +7,62 @@ generator client {
   provider = "prisma-client-js"
 }
 
+model UserType {
+    id String @id @default(cuid())
+    name String @unique
+    users User[]
+}
+
 model User {
-  id    String @id @default(cuid())
-  email String @unique
+    id    String @id @default(cuid())
+    email String @unique
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 
-  password Password?
-  notes    Note[]
+    profile Profile?
+    password Password?
+
+    userType UserType @relation(fields: [id_userType], references: [id], onDelete: Cascade, onUpdate:Cascade)
+    id_userType String
 }
 
 model Password {
-  hash String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+    hash String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId String @unique
 }
 
-model Note {
-  id    String @id @default(cuid())
-  title String
-  body  String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String
+model Contact {
+    id          String @id @default(cuid())
+    name        String
+    info        String @unique
+    phone       Boolean
+    email       Boolean
+    profiles    ContactsOnProfile[]
 }
+
+model Profile {
+    id String @id @default(cuid())
+
+    first_name  String
+    last_name   String
+    contacts    ContactsOnProfile[]
+
+    user User @relation(fields: [id_user], references: [id])
+    id_user String
+}
+
+model ContactsOnProfile {
+    contact Contact @relation (fields: [id_contact], references: [id])
+    id_contact String
+    profile Profile @relation (fields: [id_profile], references: [id])
+    id_profile String
+    assignedAt DateTime @default(now())
+    assignedBy String
+
+    @@id([id_contact, id_profile])
+}
+
+
+
