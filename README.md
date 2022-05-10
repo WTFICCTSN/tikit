@@ -1,6 +1,6 @@
 # TIKIT
 **Disciplina** : Computação na Nuvem  
-**Grupo**: João Jesus (WTFICCTSN) , Hugo Duarte (Toninho123) , Wilson Oliveira (ZephyrDogma)  
+**Grupo**: João Jesus ([https://github.com/WTFICCTSN]WTFICCTSN) , Hugo Duarte ([https://github.com/toninho123]Toninho123) , Wilson Oliveira ([https://github.com/ZephyrDogma]ZephyrDogma)  
 
 ---
 # Descriçao Projeto
