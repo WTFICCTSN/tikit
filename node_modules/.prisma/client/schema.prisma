@@ -8,61 +8,158 @@ generator client {
 }
 
 model UserType {
-    id String @id @default(cuid())
-    name String @unique
-    users User[]
+  id    String @id @default(cuid())
+  name  String @unique
+  users User[]
 }
 
 model User {
-    id    String @id @default(cuid())
-    email String @unique
+  id    String @id @default(cuid())
+  email String @unique
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-    profile Profile?
-    password Password?
+  userType    UserType? @relation(fields: [id_userType], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_userType String?
 
-    userType UserType @relation(fields: [id_userType], references: [id], onDelete: Cascade, onUpdate:Cascade)
-    id_userType String
+  profile  Profile?
+  password Password?
+  Ticket   Ticket[]
 }
 
 model Password {
-    hash String
-    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    userId String @unique
+  hash   String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
 }
 
 model Contact {
-    id          String @id @default(cuid())
-    name        String
-    info        String @unique
-    phone       Boolean
-    email       Boolean
-    profiles    ContactsOnProfile[]
+  id       String              @id @default(cuid())
+  name     String
+  info     String              @unique
+  phone    Boolean
+  email    Boolean
+  profiles ContactsOnProfile[]
 }
 
 model Profile {
-    id String @id @default(cuid())
+  id String @id @default(cuid())
 
-    first_name  String
-    last_name   String
-    contacts    ContactsOnProfile[]
+  first_name String
+  last_name  String
+  contacts   ContactsOnProfile[]
 
-    user User @relation(fields: [id_user], references: [id])
-    id_user String
+
+  user    User   @relation(fields: [id_user], references: [id])
+  id_user String @unique
+
+  profilePic Image?  @relation(fields: [id_pic], references: [id])
+  id_pic     String? @unique
 }
 
 model ContactsOnProfile {
-    contact Contact @relation (fields: [id_contact], references: [id])
-    id_contact String
-    profile Profile @relation (fields: [id_profile], references: [id])
-    id_profile String
-    assignedAt DateTime @default(now())
-    assignedBy String
+  contact    Contact  @relation(fields: [id_contact], references: [id])
+  id_contact String
+  profile    Profile  @relation(fields: [id_profile], references: [id])
+  id_profile String
+  assignedAt DateTime @default(now())
+  assignedBy String
 
-    @@id([id_contact, id_profile])
+  @@id([id_contact, id_profile])
 }
 
+model Image {
+  id        String            @id @default(cuid())
+  name      String
+  url       String            @unique
+  createdAt DateTime          @default(now())
+  createdBy String
+  Profile   Profile?
+  TicketImg ImageFromTicket[]
+}
 
+model Ticket {
+  id    String @id @default(cuid())
+  title String @unique
+  desc  String
 
+  imagens ImageFromTicket[]
+
+  parentTicket Ticket? @relation("Subtickets", fields: [id_ticket], references: [id])
+  id_ticket    String?
+
+  subtickets Ticket[] @relation("Subtickets")
+
+  user    User   @relation(fields: [id_user], references: [id])
+  id_user String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ImageFromTicket {
+  ticket     Ticket   @relation(fields: [id_ticket], references: [id])
+  id_ticket  String
+  imagem     Image    @relation(fields: [id_imagem], references: [id])
+  id_imagem  String
+  assignedAt DateTime @default(now())
+  assignedBy String
+
+  @@id([id_ticket, id_imagem])
+}
+
+//model Component {
+//  id              String            @id @default(cuid())
+//  name            String
+//  desc            String
+//  createdAt       DateTime          @default(now())
+//  updatedAt       DateTime          @updatedAt
+//  ComponentOnSpec ComponentOnSpec[]
+//}
+
+//model Specification {
+//  id      String  @id @default(cuid())
+//  name    String
+//  current Boolean @default(true)
+//
+//  Machine         Machine           @relation(fields: [id_machine], references: [id])
+//  id_machine      String
+//  ComponentOnSpec ComponentOnSpec[]
+//}
+
+//model ComponentOnSpec {
+//  spec       Specification @relation(fields: [id_spec], references: [id])
+//  id_spec    String
+//  comp       Component     @relation(fields: [id_comp], references: [id])
+//  id_comp    String
+//  partSerial String?
+//  assignedAt DateTime      @default(now())
+//  assignedBy String
+//
+// @@id([id_spec, id_comp])
+//}
+
+//model Machine {
+//  id         String @id @default(cuid())
+//  name       String
+//  factory_id String
+//
+//  specs     Specification[]
+//  tickets   Ticket[]
+//  type      MachineType?    @relation(fields: [id_type], references: [id])
+//  id_type   String
+//  createdAt DateTime        @default(now())
+//  updatedAt DateTime        @updatedAt
+//}
+//
+//model MachineSpecification{
+//      machine    Contact  @relation(fields: [id_machine], references: [id])
+//      id_machine String
+//      specs    Specification  @relation(fields: [id_profile], references: [id])
+//      id_profile String
+//      assignedAt DateTime @default(now())
+//      assignedBy String
+//
+//      @@id([id_machine, id_profile])
+//}
