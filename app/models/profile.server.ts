@@ -1,7 +1,6 @@
-import type { User, Profile, Ticket, UserType, Image } from "@prisma/client";
+import type { User, Profile, UserType, Image, ContactsOnProfile, Contact } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-// import {Ticket} from "@prisma/client";
 
 export type { Profile } from "@prisma/client";
 //READ
@@ -12,6 +11,14 @@ export function getProfile({
 }) {
     return prisma.profile.findFirst({
         where: { id, id_user },
+        include: {
+            profilePic : true,
+            contacts : {
+                include:{
+                    contact:true,
+                }
+            }
+        }
     });
 }
 

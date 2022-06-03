@@ -32,7 +32,7 @@ export default function TicketsPage() {
                 <Form action="/logout" method="post">
                     <button
                         type="submit"
-                        className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-slate-500 active:bg-slate-600"
+                        className="rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
                     >
                         Logout
                     </button>
@@ -57,7 +57,7 @@ export default function TicketsPage() {
                                         className={({ isActive }) =>
                                             `block border-b border-slate-900 p-4 text-white text-xl ${isActive ? "bg-purple-700 underline" : ""}`
                                         }
-                                        to={ticket.id}
+                                        to="/tickets/'{ticket.id}'"
                                     >
                                         {ticket.title}
                                     </NavLink>
