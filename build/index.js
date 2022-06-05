@@ -82,7 +82,7 @@ var import_node2 = require("@remix-run/node");
 var import_react2 = require("@remix-run/react");
 
 // app/styles/tailwind.css
-var tailwind_default = "/build/_assets/tailwind-MSOIWHSN.css";
+var tailwind_default = "/build/_assets/tailwind-BPXHFAIS.css";
 
 // app/styles/gen.css
 var gen_default = "/build/_assets/gen-Z4NRALPD.css";
@@ -109,7 +109,12 @@ if (false) {
 
 // app/models/user.server.ts
 async function getUserById(id) {
-  return prisma.user.findUnique({ where: { id } });
+  return prisma.user.findUnique({
+    where: { id },
+    include: {
+      userType: true
+    }
+  });
 }
 async function getUserByEmail(email) {
   return prisma.user.findUnique({ where: { email } });
@@ -123,7 +128,8 @@ async function createTechnician(email, password) {
         create: {
           hash: hashedPassword
         }
-      }
+      },
+      id_userType: "cl3ycqrmc0247ca2l92hfqbqv"
     }
   });
 }
@@ -588,14 +594,46 @@ function CatchBoundary2() {
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
 
+// route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/tickets/index.tsx
+var tickets_exports2 = {};
+__export(tickets_exports2, {
+  default: () => TicketsIndexPage,
+  loader: () => loader7
+});
+var import_node7 = require("@remix-run/node");
+var import_react9 = require("@remix-run/react");
+var loader7 = async ({ request }) => {
+  const id_user = await requireUserId(request);
+  const ticketListItems = await getTicketListItems({ id_user });
+  return (0, import_node7.json)({ ticketListItems });
+};
+function TicketsIndexPage() {
+  const data = (0, import_react9.useLoaderData)();
+  return /* @__PURE__ */ React.createElement("div", {
+    className: "p-8 h-full"
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "p-4 pt-8 w-full bg-opacity-75 bg-slate-800"
+  }, data.ticketListItems.length === 0 ? /* @__PURE__ */ React.createElement("p", {
+    className: "p-4 text-white"
+  }, "Feels Lonely In Here") : /* @__PURE__ */ React.createElement("ol", {
+    className: "grid grid-cols-4 gap-2 sm:grid-cols-2"
+  }, data.ticketListItems.map((ticket) => /* @__PURE__ */ React.createElement("li", {
+    className: "p-2 bg-purple-800 shadow-xl rounded",
+    key: ticket.id
+  }, /* @__PURE__ */ React.createElement(import_react9.NavLink, {
+    className: ({ isActive }) => `block border-b border-slate-900 p-4 text-white text-xl ${isActive ? "bg-purple-700 underline" : ""}`,
+    to: ticket.id
+  }, ticket.title))))));
+}
+
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/tickets/new.tsx
 var new_exports = {};
 __export(new_exports, {
   action: () => action,
   default: () => NewTicketPage
 });
-var import_node7 = require("@remix-run/node");
-var import_react9 = require("@remix-run/react");
+var import_node8 = require("@remix-run/node");
+var import_react10 = require("@remix-run/react");
 var React2 = __toESM(require("react"));
 var action = async ({ request }) => {
   const userId = await requireUserId(request);
@@ -603,17 +641,17 @@ var action = async ({ request }) => {
   const title = formData.get("title");
   const desc = formData.get("desc");
   if (typeof title !== "string" || title.length === 0) {
-    return (0, import_node7.json)({ errors: { title: "Title is required" } }, { status: 400 });
+    return (0, import_node8.json)({ errors: { title: "Title is required" } }, { status: 400 });
   }
   if (typeof desc !== "string" || desc.length === 0) {
-    return (0, import_node7.json)({ errors: { desc: "desc is required" } }, { status: 400 });
+    return (0, import_node8.json)({ errors: { desc: "desc is required" } }, { status: 400 });
   }
   const ticket = await createTicket({ title, desc, userId });
-  return (0, import_node7.redirect)(`/tickets/${ticket.id}`);
+  return (0, import_node8.redirect)(`/tickets/${ticket.id}`);
 };
 function NewTicketPage() {
   var _a, _b, _c, _d, _e, _f;
-  const actionData = (0, import_react9.useActionData)();
+  const actionData = (0, import_react10.useActionData)();
   const titleRef = React2.useRef(null);
   const bodyRef = React2.useRef(null);
   React2.useEffect(() => {
@@ -624,7 +662,7 @@ function NewTicketPage() {
       (_d2 = bodyRef.current) == null ? void 0 : _d2.focus();
     }
   }, [actionData]);
-  return /* @__PURE__ */ React2.createElement(import_react9.Form, {
+  return /* @__PURE__ */ React2.createElement(import_react10.Form, {
     method: "post",
     style: {
       display: "flex",
@@ -667,14 +705,14 @@ function NewTicketPage() {
 var logout_exports = {};
 __export(logout_exports, {
   action: () => action2,
-  loader: () => loader7
+  loader: () => loader8
 });
-var import_node8 = require("@remix-run/node");
+var import_node9 = require("@remix-run/node");
 var action2 = async ({ request }) => {
   return logout(request);
 };
-var loader7 = async () => {
-  return (0, import_node8.redirect)("/");
+var loader8 = async () => {
+  return (0, import_node9.redirect)("/");
 };
 
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/index.tsx
@@ -682,7 +720,7 @@ var routes_exports = {};
 __export(routes_exports, {
   default: () => Index
 });
-var import_react10 = require("@remix-run/react");
+var import_react11 = require("@remix-run/react");
 function Index() {
   const user = useOptionalUser();
   return /* @__PURE__ */ React.createElement("main", {
@@ -707,15 +745,15 @@ function Index() {
     className: "mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl"
   }, "Check the README.md file for instructions on how to get this project deployed."), /* @__PURE__ */ React.createElement("div", {
     className: "mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center"
-  }, user ? /* @__PURE__ */ React.createElement(import_react10.Link, {
+  }, user ? /* @__PURE__ */ React.createElement(import_react11.Link, {
     to: "/tickets",
     className: "flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-purple-800 shadow-sm hover:bg-purple-50 sm:px-8"
   }, "View Tikets for ", user.email) : /* @__PURE__ */ React.createElement("div", {
     className: "space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0"
-  }, /* @__PURE__ */ React.createElement(import_react10.Link, {
+  }, /* @__PURE__ */ React.createElement(import_react11.Link, {
     to: "/join",
     className: "flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-purple-700 shadow-sm hover:bg-purple-50 sm:px-8"
-  }, "Sign up"), /* @__PURE__ */ React.createElement(import_react10.Link, {
+  }, "Sign up"), /* @__PURE__ */ React.createElement(import_react11.Link, {
     to: "/login",
     className: "flex items-center justify-center rounded-md bg-purple-500 px-4 py-3 font-medium text-white hover:bg-purple-600  "
   }, "Log In"))))))));
@@ -726,17 +764,17 @@ var login_exports = {};
 __export(login_exports, {
   action: () => action3,
   default: () => LoginPage,
-  loader: () => loader8,
+  loader: () => loader9,
   meta: () => meta2
 });
-var import_node9 = require("@remix-run/node");
-var import_react11 = require("@remix-run/react");
+var import_node10 = require("@remix-run/node");
+var import_react12 = require("@remix-run/react");
 var React3 = __toESM(require("react"));
-var loader8 = async ({ request }) => {
+var loader9 = async ({ request }) => {
   const userId = await getUserId(request);
   if (userId)
-    return (0, import_node9.redirect)("/");
-  return (0, import_node9.json)({});
+    return (0, import_node10.redirect)("/");
+  return (0, import_node10.json)({});
 };
 var action3 = async ({ request }) => {
   const formData = await request.formData();
@@ -745,17 +783,17 @@ var action3 = async ({ request }) => {
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/notes");
   const remember = formData.get("remember");
   if (!validateEmail(email)) {
-    return (0, import_node9.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
+    return (0, import_node10.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
   }
   if (typeof password !== "string") {
-    return (0, import_node9.json)({ errors: { password: "Password is required" } }, { status: 400 });
+    return (0, import_node10.json)({ errors: { password: "Password is required" } }, { status: 400 });
   }
   if (password.length < 8) {
-    return (0, import_node9.json)({ errors: { password: "Password is too short" } }, { status: 400 });
+    return (0, import_node10.json)({ errors: { password: "Password is too short" } }, { status: 400 });
   }
   const user = await verifyLogin(email, password);
   if (!user) {
-    return (0, import_node9.json)({ errors: { email: "Invalid email or password" } }, { status: 400 });
+    return (0, import_node10.json)({ errors: { email: "Invalid email or password" } }, { status: 400 });
   }
   return createUserSession({
     request,
@@ -771,9 +809,9 @@ var meta2 = () => {
 };
 function LoginPage() {
   var _a, _b, _c, _d;
-  const [searchParams] = (0, import_react11.useSearchParams)();
+  const [searchParams] = (0, import_react12.useSearchParams)();
   const redirectTo = searchParams.get("redirectTo") || "/notes";
-  const actionData = (0, import_react11.useActionData)();
+  const actionData = (0, import_react12.useActionData)();
   const emailRef = React3.useRef(null);
   const passwordRef = React3.useRef(null);
   React3.useEffect(() => {
@@ -788,7 +826,7 @@ function LoginPage() {
     className: "flex min-h-full flex-col justify-center"
   }, /* @__PURE__ */ React3.createElement("div", {
     className: "mx-auto w-full max-w-md px-8"
-  }, /* @__PURE__ */ React3.createElement(import_react11.Form, {
+  }, /* @__PURE__ */ React3.createElement(import_react12.Form, {
     method: "post",
     className: "space-y-6"
   }, /* @__PURE__ */ React3.createElement("div", null, /* @__PURE__ */ React3.createElement("label", {
@@ -848,7 +886,7 @@ function LoginPage() {
     className: "ml-2 block text-sm text-gray-900"
   }, "Remember me")), /* @__PURE__ */ React3.createElement("div", {
     className: "text-center text-sm text-gray-500"
-  }, "Don't have an account?", " ", /* @__PURE__ */ React3.createElement(import_react11.Link, {
+  }, "Don't have an account?", " ", /* @__PURE__ */ React3.createElement(import_react12.Link, {
     className: "text-blue-500 underline",
     to: {
       pathname: "/join",
@@ -862,17 +900,17 @@ var join_exports = {};
 __export(join_exports, {
   action: () => action4,
   default: () => Join,
-  loader: () => loader9,
+  loader: () => loader10,
   meta: () => meta3
 });
-var import_node10 = require("@remix-run/node");
-var import_react12 = require("@remix-run/react");
+var import_node11 = require("@remix-run/node");
+var import_react13 = require("@remix-run/react");
 var React4 = __toESM(require("react"));
-var loader9 = async ({ request }) => {
+var loader10 = async ({ request }) => {
   const userId = await getUserId(request);
   if (userId)
-    return (0, import_node10.redirect)("/");
-  return (0, import_node10.json)({});
+    return (0, import_node11.redirect)("/");
+  return (0, import_node11.json)({});
 };
 var action4 = async ({ request }) => {
   const formData = await request.formData();
@@ -880,17 +918,17 @@ var action4 = async ({ request }) => {
   const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
   if (!validateEmail(email)) {
-    return (0, import_node10.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
   }
   if (typeof password !== "string") {
-    return (0, import_node10.json)({ errors: { password: "Password is required" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { password: "Password is required" } }, { status: 400 });
   }
   if (password.length < 8) {
-    return (0, import_node10.json)({ errors: { password: "Password is too short" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { password: "Password is too short" } }, { status: 400 });
   }
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
-    return (0, import_node10.json)({ errors: { email: "A user already exists with this email" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { email: "A user already exists with this email" } }, { status: 400 });
   }
   const user = await createTechnician(email, password);
   return createUserSession({
@@ -907,9 +945,9 @@ var meta3 = () => {
 };
 function Join() {
   var _a, _b, _c, _d;
-  const [searchParams] = (0, import_react12.useSearchParams)();
+  const [searchParams] = (0, import_react13.useSearchParams)();
   const redirectTo = searchParams.get("redirectTo") ?? void 0;
-  const actionData = (0, import_react12.useActionData)();
+  const actionData = (0, import_react13.useActionData)();
   const emailRef = React4.useRef(null);
   const passwordRef = React4.useRef(null);
   React4.useEffect(() => {
@@ -924,7 +962,7 @@ function Join() {
     className: "flex min-h-full flex-col justify-center"
   }, /* @__PURE__ */ React4.createElement("div", {
     className: "mx-auto w-full max-w-md px-8"
-  }, /* @__PURE__ */ React4.createElement(import_react12.Form, {
+  }, /* @__PURE__ */ React4.createElement(import_react13.Form, {
     method: "post",
     className: "space-y-6"
   }, /* @__PURE__ */ React4.createElement("div", null, /* @__PURE__ */ React4.createElement("label", {
@@ -974,7 +1012,7 @@ function Join() {
     className: "flex items-center justify-center"
   }, /* @__PURE__ */ React4.createElement("div", {
     className: "text-center text-sm text-gray-500"
-  }, "Already have an account?", " ", /* @__PURE__ */ React4.createElement(import_react12.Link, {
+  }, "Already have an account?", " ", /* @__PURE__ */ React4.createElement(import_react13.Link, {
     className: "text-blue-500 underline",
     to: {
       pathname: "/login",
@@ -984,7 +1022,7 @@ function Join() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { "version": "79ee07ba", "entry": { "module": "/build/entry.client-DYQ2VRHB.js", "imports": ["/build/_shared/chunk-UMD7BRNS.js", "/build/_shared/chunk-6BO74FWO.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-Q5YVLALH.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/healthcheck": { "id": "routes/healthcheck", "parentId": "root", "path": "healthcheck", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/healthcheck-DZ55A626.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-R4BDLDCR.js", "imports": ["/build/_shared/chunk-UNVDX6CU.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/join": { "id": "routes/join", "parentId": "root", "path": "join", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/join-EPLYGEXT.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-UNVDX6CU.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-SJQPSEKL.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-UNVDX6CU.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-PABHQ6ZK.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile": { "id": "routes/profile", "parentId": "root", "path": "profile", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile-VRAAHJP3.js", "imports": ["/build/_shared/chunk-UNVDX6CU.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile/$profileId": { "id": "routes/profile/$profileId", "parentId": "routes/profile", "path": ":profileId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile/$profileId-6MKBQXMF.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets": { "id": "routes/tickets", "parentId": "root", "path": "tickets", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets-K6QDYLFA.js", "imports": ["/build/_shared/chunk-UNVDX6CU.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/$ticketId": { "id": "routes/tickets/$ticketId", "parentId": "routes/tickets", "path": ":ticketId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/$ticketId-H4TEKCFN.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets/new": { "id": "routes/tickets/new", "parentId": "routes/tickets", "path": "new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/new-4D7RDPTD.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/userTypes": { "id": "routes/userTypes", "parentId": "root", "path": "userTypes", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/userTypes-EEOHBCM4.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-79EE07BA.js" };
+var assets_manifest_default = { "version": "a6656053", "entry": { "module": "/build/entry.client-3J3RMLVI.js", "imports": ["/build/_shared/chunk-VKMHGVMV.js", "/build/_shared/chunk-6BO74FWO.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-5OBI2UE5.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/healthcheck": { "id": "routes/healthcheck", "parentId": "root", "path": "healthcheck", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/healthcheck-DZ55A626.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-CHB6ULFH.js", "imports": ["/build/_shared/chunk-XT2SC2RF.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/join": { "id": "routes/join", "parentId": "root", "path": "join", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/join-DRQNCLH3.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-HNLD6IGX.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-PABHQ6ZK.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile": { "id": "routes/profile", "parentId": "root", "path": "profile", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile-TVL3R3EU.js", "imports": ["/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile/$profileId": { "id": "routes/profile/$profileId", "parentId": "routes/profile", "path": ":profileId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile/$profileId-TM2WNWWN.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets": { "id": "routes/tickets", "parentId": "root", "path": "tickets", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets-THASIMQZ.js", "imports": ["/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/$ticketId": { "id": "routes/tickets/$ticketId", "parentId": "routes/tickets", "path": ":ticketId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/$ticketId-K57Q7CFM.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets/index": { "id": "routes/tickets/index", "parentId": "routes/tickets", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/tickets/index-LRPZHZBK.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/new": { "id": "routes/tickets/new", "parentId": "routes/tickets", "path": "new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/new-QXVQB473.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/userTypes": { "id": "routes/userTypes", "parentId": "root", "path": "userTypes", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/userTypes-EEOHBCM4.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-A6656053.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var entry = { module: entry_server_exports };
@@ -1044,6 +1082,14 @@ var routes = {
     index: void 0,
     caseSensitive: void 0,
     module: ticketId_exports
+  },
+  "routes/tickets/index": {
+    id: "routes/tickets/index",
+    parentId: "routes/tickets",
+    path: void 0,
+    index: true,
+    caseSensitive: void 0,
+    module: tickets_exports2
   },
   "routes/tickets/new": {
     id: "routes/tickets/new",

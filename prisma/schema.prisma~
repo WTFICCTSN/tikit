@@ -120,7 +120,7 @@ model ImageFromTicket {
 
 
 
-//model Component {
+//model Component {t
 //  id              String            @id @default(cuid())
 //  name            String
 //  desc            String

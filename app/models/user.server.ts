@@ -6,7 +6,12 @@ import { prisma } from "~/db.server";
 export type { User } from "@prisma/client";
 // READ ------------------------------------------------------------------------------------------------
 export async function getUserById(id: User["id"]) {
-  return prisma.user.findUnique({ where: { id } });
+  return prisma.user.findUnique({
+      where: { id },
+      include: {
+          userType: true
+      }
+  });
 }
 
 export async function getUserByEmail(email: User["email"]) {
@@ -39,10 +44,10 @@ export async function createTechnician(email: User["email"], password: string) {
                     hash: hashedPassword,
                 },
             },
+            id_userType: "cl3ycqrmc0247ca2l92hfqbqv",
         },
     });
 }
-
 
 // DESTROY -----------------------------------------------------------------------------------------
 export async function deleteUserByEmail(email: User["email"]) {
