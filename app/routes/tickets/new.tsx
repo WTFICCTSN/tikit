@@ -97,7 +97,7 @@ export default function NewTicketPage() {
                 </label>
                 {actionData?.errors?.desc && (
                     <div className="pt-1 text-red-700" id="body-error">
-                        {actionData.errors.desc}
+                        {actionData.errors.desc} 
                     </div>
                 )}
             </div>
