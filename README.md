@@ -1,8 +1,7 @@
 # TIKIT
 **Disciplina** : Computação na Nuvem  
-**Grupo**: João Jesus ([WTFICCTSN](https://github.com/WTFICCTSN)) , Hugo Duarte ([Toninho123](https://github.com/toninho123)) , Wilson Oliveira ([ZephyrDogma](https://github.com/ZephyrDogma))  
+**Grupo**: João Jesus ([WTFICCTSN](https://github.com/WTFICCTSN))   Hugo Duarte ([Toninho123](https://github.com/toninho123))   Wilson Oliveira ([ZephyrDogma](https://github.com/ZephyrDogma))    
 
----
 # Descriçao Projeto
 
 Este software consiste num gestor de tickets orientado para a manutenção de computadores, denominado de “TikIT”, este é responsável por gerir todas as máquinas que entram para a loja, a fim de auxiliar na organização da empresa quer a nível da gestão da carga horária ao apontar num calendário datas/horários importantes para a resolução de assuntos relativos a tickets existentes, e outros fatores tais como a prioridade dos mesmos tickets.
