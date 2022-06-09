@@ -79,10 +79,10 @@ model Image {
   TicketImg ImageFromTicket[]
 }
 
-model UserType {
+model PriorityType {
   id    String @id @default(cuid())
   name  String @unique
-  Ticket Ticket[]
+//  Ticket Ticket[]
 }
 
 model Ticket {
@@ -100,8 +100,8 @@ model Ticket {
   user    User   @relation(fields: [id_user], references: [id])
   id_user String
 
-  pioridade Priority @relation(fields: [id_priority], references: [id])
-  id_priority String
+//  pioridade PriorityType @relation(fields: [id_priority], references: [id])
+//  id_priority String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -14,11 +14,10 @@ type LoaderData = {
     ticketListItems: Awaited<ReturnType<typeof getTicketListItems>>;
 };
 
-export const loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request }) => {
     const id_user = await requireUserId(request);
-    invariant(params.profileId, "profileId not found");
-    const profile = await getProfile( params.profileId );
-    const ticketListItems = await getTicketListItems({id_user: params.profileId });
+    const profile = await getProfile( id_user );
+    const ticketListItems = await getTicketListItems({ id_user });
     if (!profile) {
         throw new Response("Not Found", { status: 404 });
     }
@@ -28,6 +27,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 export default function ProfilePage() {
     const data = useLoaderData() as LoaderData;
     console.log(data);
+    let ticket_url: string;
     return (
         <div className="">
             <div className="p-8 ">
@@ -56,24 +56,26 @@ export default function ProfilePage() {
                 </div>
             </div>
             <div className="p-8 pt-0">
-                <div className=" pl-8 my-4 p-4 flex w-full bg-opacity-75 bg-slate-800">
-                    {data.ticketListItems.length === 0 ? (
-                        <p className="p-4 text-white">Feels Lonely In Here</p>
-                    ) : (
-                        <ol>
-                            {data.ticketListItems.map((ticket) => (
-                                <li key={ticket.id} className="p-4 pb-8 w-full">
+            <div className=" pl-8 my-4 p-4 flex w-full bg-opacity-75 bg-slate-800">
+                {data.ticketListItems.length === 0 ? (
+                    <p className="p-4 text-white">Feels Lonely In Here</p>
+                ) : (
+                    <ol className="w-full">
+                        {data.ticketListItems.map((ticket) => (
 
-                                    <h3 className="text-2xl text-white font-thin hover:text-slate-600">#{ticket.id} <span className='font-bold'>{ticket.title}</span></h3><hr></hr>
 
-                                </li>
+                            <NavLink to={"/tickets/"+ ticket.id}>
+                            <li key={ticket.id} className="p-4 pb-8 w-full">
+                                <h3 className="text-2xl text-white font-thin hover:text-slate-600">#{ticket.id} <span className='font-bold'>{ticket.title}</span></h3><hr></hr>
+                            </li>
+                            </NavLink>
                             ))}
-                        </ol>
-                    )}
-                </div>
+                    </ol>
+                )}
             </div>
         </div>
-    );
+        </div>
+);
 }
 //ERROR
 export function ErrorBoundary({ error }: { error: Error }) {

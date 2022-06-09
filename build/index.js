@@ -82,7 +82,7 @@ var import_node2 = require("@remix-run/node");
 var import_react2 = require("@remix-run/react");
 
 // app/styles/tailwind.css
-var tailwind_default = "/build/_assets/tailwind-BPXHFAIS.css";
+var tailwind_default = "/build/_assets/tailwind-5WQ4YNHN.css";
 
 // app/styles/gen.css
 var gen_default = "/build/_assets/gen-Z4NRALPD.css";
@@ -117,19 +117,30 @@ async function getUserById(id) {
   });
 }
 async function getUserByEmail(email) {
-  return prisma.user.findUnique({ where: { email } });
+  return prisma.user.findUnique({
+    where: { email },
+    include: {
+      userType: true
+    }
+  });
 }
-async function createTechnician(email, password) {
+async function createUser(email, password, userType, fsName, lsName) {
   const hashedPassword = await import_bcryptjs.default.hash(password, 10);
   return prisma.user.create({
     data: {
       email,
+      id_userType: userType,
       password: {
         create: {
           hash: hashedPassword
         }
       },
-      id_userType: "cl3ycqrmc0247ca2l92hfqbqv"
+      profile: {
+        create: {
+          first_name: fsName,
+          last_name: lsName
+        }
+      }
     }
   });
 }
@@ -225,7 +236,7 @@ var links = () => {
 };
 var meta = () => ({
   charset: "utf-8",
-  title: "Remix Notes",
+  title: "TiKiT",
   viewport: "width=device-width,initial-scale=1"
 });
 var loader = async ({ request }) => {
@@ -265,14 +276,12 @@ var loader2 = async ({ request }) => {
   }
 };
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/userTypes.tsx
-var userTypes_exports = {};
-
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/profile.tsx
 var profile_exports = {};
 __export(profile_exports, {
-  default: () => TicketsPage,
-  loader: () => loader3
+  default: () => ProfileIndexPage,
+  loader: () => loader3,
+  meta: () => meta2
 });
 var import_node3 = require("@remix-run/node");
 var import_react5 = require("@remix-run/react");
@@ -316,6 +325,21 @@ function validateEmail(email) {
   return typeof email === "string" && email.length > 3 && email.includes("@");
 }
 
+// app/models/profile.server.ts
+function getProfile(id_user) {
+  return prisma.profile.findFirst({
+    where: { id_user },
+    include: {
+      profilePic: true,
+      contacts: {
+        include: {
+          contact: true
+        }
+      }
+    }
+  });
+}
+
 // app/models/ticket.server.ts
 function getTicket({
   id,
@@ -351,50 +375,58 @@ function createTicket({
 }
 
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/profile.tsx
+var React2 = __toESM(require("react"));
 var loader3 = async ({ request }) => {
   const id_user = await requireUserId(request);
+  const profile = await getProfile(id_user);
+  const user = await getUserById(id_user);
   const ticketListItems = await getTicketListItems({ id_user });
-  return (0, import_node3.json)({ ticketListItems });
+  return (0, import_node3.json)({ profile, user, ticketListItems });
 };
-function TicketsPage() {
+var meta2 = () => {
+  return {
+    title: "User Profile - TiKiT"
+  };
+};
+function ProfileIndexPage() {
   const data = (0, import_react5.useLoaderData)();
   const user = useUser();
-  return /* @__PURE__ */ React.createElement("div", {
+  return /* @__PURE__ */ React2.createElement("div", {
     className: "flex h-full min-h-screen flex-col"
-  }, /* @__PURE__ */ React.createElement("header", {
+  }, /* @__PURE__ */ React2.createElement("header", {
     className: "flex items-center justify-between bg-purple-800 p-4 text-white"
-  }, /* @__PURE__ */ React.createElement("h1", {
+  }, /* @__PURE__ */ React2.createElement("h1", {
     className: "text-3xl font-bold"
-  }, /* @__PURE__ */ React.createElement(import_react5.Link, {
-    to: "."
-  }, "TIKIT")), /* @__PURE__ */ React.createElement(import_react5.Link, {
-    to: "/profile/'{data.profile.id}'",
+  }, /* @__PURE__ */ React2.createElement(import_react5.Link, {
+    to: "/tickets"
+  }, "TIKIT")), /* @__PURE__ */ React2.createElement(import_react5.Link, {
+    to: "",
     className: "block p-4 text-xl text-white underline border-slate-900"
-  }, /* @__PURE__ */ React.createElement("p", {
+  }, /* @__PURE__ */ React2.createElement("p", {
     className: "text-white"
-  }, user.email)), /* @__PURE__ */ React.createElement(import_react5.Form, {
+  }, user.email)), /* @__PURE__ */ React2.createElement(import_react5.Form, {
     action: "/logout",
     method: "post"
-  }, /* @__PURE__ */ React.createElement("button", {
+  }, /* @__PURE__ */ React2.createElement("button", {
     type: "submit",
     className: "rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-blue-500 active:bg-blue-600"
-  }, "Logout"))), /* @__PURE__ */ React.createElement("main", {
+  }, "Logout"))), /* @__PURE__ */ React2.createElement("main", {
     className: "flex h-full loginGradient"
-  }, /* @__PURE__ */ React.createElement("div", {
+  }, /* @__PURE__ */ React2.createElement("div", {
     className: "h-full w-80 border-r border-slate-900 bg-slate-800"
-  }, /* @__PURE__ */ React.createElement(import_react5.Link, {
+  }, /* @__PURE__ */ React2.createElement(import_react5.Link, {
     to: "new",
     className: "block p-4 text-xl text-white underline border-slate-900"
-  }, "Create Ticket"), /* @__PURE__ */ React.createElement("hr", null), data.ticketListItems.length === 0 ? /* @__PURE__ */ React.createElement("p", {
+  }, "Create Ticket"), /* @__PURE__ */ React2.createElement("hr", null), data.ticketListItems.length === 0 ? /* @__PURE__ */ React2.createElement("p", {
     className: "p-4 text-white"
-  }, "Feels Lonely In Here") : /* @__PURE__ */ React.createElement("ol", null, data.ticketListItems.map((ticket) => /* @__PURE__ */ React.createElement("li", {
+  }, "Feels Lonely In Here") : /* @__PURE__ */ React2.createElement("ol", null, data.ticketListItems.map((ticket) => /* @__PURE__ */ React2.createElement("li", {
     key: ticket.id
-  }, /* @__PURE__ */ React.createElement(import_react5.NavLink, {
+  }, /* @__PURE__ */ React2.createElement(import_react5.NavLink, {
     className: ({ isActive }) => `block border-b border-slate-900 p-4 text-white text-xl ${isActive ? "bg-purple-700 underline" : ""}`,
-    to: "/tickets/'{ticket.id}'"
-  }, ticket.title))))), /* @__PURE__ */ React.createElement("div", {
+    to: "/tickets/" + ticket.id
+  }, ticket.title))))), /* @__PURE__ */ React2.createElement("div", {
     className: "flex-1 p-6"
-  }, /* @__PURE__ */ React.createElement(import_react5.Outlet, null))));
+  }, /* @__PURE__ */ React2.createElement(import_react5.Outlet, null))));
 }
 
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/profile/$profileId.tsx
@@ -402,53 +434,37 @@ var profileId_exports = {};
 __export(profileId_exports, {
   CatchBoundary: () => CatchBoundary,
   ErrorBoundary: () => ErrorBoundary,
-  default: () => TicketDetailsPage,
+  default: () => ProfilePage,
   loader: () => loader4
 });
 var import_node4 = require("@remix-run/node");
 var import_react6 = require("@remix-run/react");
 var import_tiny_invariant2 = __toESM(require("tiny-invariant"));
-
-// app/models/profile.server.ts
-function getProfile({
-  id,
-  id_user
-}) {
-  return prisma.profile.findFirst({
-    where: { id, id_user },
-    include: {
-      profilePic: true,
-      contacts: {
-        include: {
-          contact: true
-        }
-      }
-    }
-  });
-}
-
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/profile/$profileId.tsx
 var loader4 = async ({ request, params }) => {
   const id_user = await requireUserId(request);
   (0, import_tiny_invariant2.default)(params.profileId, "profileId not found");
-  console.log(params.id);
-  const profile = await getProfile({ id: params.profileId, id_user });
+  const profile = await getProfile(params.profileId);
+  const ticketListItems = await getTicketListItems({ id_user: params.profileId });
   if (!profile) {
     throw new Response("Not Found", { status: 404 });
   }
-  return (0, import_node4.json)({ profile });
+  return (0, import_node4.json)({ profile, ticketListItems });
 };
-function TicketDetailsPage() {
+function ProfilePage() {
   const data = (0, import_react6.useLoaderData)();
+  console.log(data);
   return /* @__PURE__ */ React.createElement("div", {
-    className: "p-8 h-full"
+    className: ""
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "p-8 "
   }, /* @__PURE__ */ React.createElement("div", {
     className: "p-4 pt-8 flex w-full bg-opacity-75 bg-slate-800"
   }, /* @__PURE__ */ React.createElement("div", {
     className: "w-1/5 h-1/5"
   }, /* @__PURE__ */ React.createElement("img", {
     className: "rounded-full ",
-    src: data.profile.profilePic.url
+    src: data.profile.profilePic.url,
+    alt: data.profile.profilePic.name
   })), /* @__PURE__ */ React.createElement("div", {
     className: "pl-8 w-full"
   }, /* @__PURE__ */ React.createElement("h3", {
@@ -461,7 +477,7 @@ function TicketDetailsPage() {
     className: " text-white"
   }, data.profile.contacts.length === 0 ? /* @__PURE__ */ React.createElement("p", {
     className: "p-4 text-white"
-  }, "Feels Lonely In Here") : /* @__PURE__ */ React.createElement("ol", {
+  }, "No Contacts Available Yet") : /* @__PURE__ */ React.createElement("ol", {
     className: "inline-flex"
   }, data.profile.contacts.map((contacto) => /* @__PURE__ */ React.createElement("li", {
     className: "pr-6",
@@ -470,7 +486,20 @@ function TicketDetailsPage() {
     className: "font-bold"
   }, contacto.contact.name, " "), " : ", /* @__PURE__ */ React.createElement("span", {
     className: "underline"
-  }, contacto.contact.info))))))));
+  }, contacto.contact.info)))))))), /* @__PURE__ */ React.createElement("div", {
+    className: "p-8 pt-0"
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: " pl-8 my-4 p-4 flex w-full bg-opacity-75 bg-slate-800"
+  }, data.ticketListItems.length === 0 ? /* @__PURE__ */ React.createElement("p", {
+    className: "p-4 text-white"
+  }, "Feels Lonely In Here") : /* @__PURE__ */ React.createElement("ol", null, data.ticketListItems.map((ticket) => /* @__PURE__ */ React.createElement("li", {
+    key: ticket.id,
+    className: "p-4 pb-8 w-full"
+  }, /* @__PURE__ */ React.createElement("h3", {
+    className: "text-2xl text-white font-thin hover:text-slate-600"
+  }, "#", ticket.id, " ", /* @__PURE__ */ React.createElement("span", {
+    className: "font-bold"
+  }, ticket.title)), /* @__PURE__ */ React.createElement("hr", null)))))));
 }
 function ErrorBoundary({ error }) {
   console.error(error);
@@ -484,72 +513,161 @@ function CatchBoundary() {
   throw new Error(`Unexpected caught response with status: ${caught.status}`);
 }
 
-// route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/tickets.tsx
-var tickets_exports = {};
-__export(tickets_exports, {
-  default: () => TicketsPage2,
+// route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/profile/index.tsx
+var profile_exports2 = {};
+__export(profile_exports2, {
+  CatchBoundary: () => CatchBoundary2,
+  ErrorBoundary: () => ErrorBoundary2,
+  default: () => ProfilePage2,
   loader: () => loader5
 });
 var import_node5 = require("@remix-run/node");
 var import_react7 = require("@remix-run/react");
 var loader5 = async ({ request }) => {
   const id_user = await requireUserId(request);
+  const profile = await getProfile(id_user);
   const ticketListItems = await getTicketListItems({ id_user });
-  return (0, import_node5.json)({ ticketListItems });
+  if (!profile) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  return (0, import_node5.json)({ profile, ticketListItems });
 };
-function TicketsPage2() {
+function ProfilePage2() {
   const data = (0, import_react7.useLoaderData)();
-  const user = useUser();
+  console.log(data);
+  let ticket_url;
   return /* @__PURE__ */ React.createElement("div", {
+    className: ""
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "p-8 "
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "p-4 pt-8 flex w-full bg-opacity-75 bg-slate-800"
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "w-1/5 h-1/5"
+  }, /* @__PURE__ */ React.createElement("img", {
+    className: "rounded-full ",
+    src: data.profile.profilePic.url,
+    alt: data.profile.profilePic.name
+  })), /* @__PURE__ */ React.createElement("div", {
+    className: "pl-8 w-full"
+  }, /* @__PURE__ */ React.createElement("h3", {
+    className: "text-6xl text-white font-thin"
+  }, "#", data.profile.id, " ", /* @__PURE__ */ React.createElement("span", {
+    className: "font-bold"
+  }, data.profile.first_name, " ", data.profile.last_name)), /* @__PURE__ */ React.createElement("hr", {
+    className: "my-4"
+  }), /* @__PURE__ */ React.createElement("div", {
+    className: " text-white"
+  }, data.profile.contacts.length === 0 ? /* @__PURE__ */ React.createElement("p", {
+    className: "p-4 text-white"
+  }, "No Contacts Available Yet") : /* @__PURE__ */ React.createElement("ol", {
+    className: "inline-flex"
+  }, data.profile.contacts.map((contacto) => /* @__PURE__ */ React.createElement("li", {
+    className: "pr-6",
+    key: contacto.contact.id
+  }, /* @__PURE__ */ React.createElement("span", {
+    className: "font-bold"
+  }, contacto.contact.name, " "), " : ", /* @__PURE__ */ React.createElement("span", {
+    className: "underline"
+  }, contacto.contact.info)))))))), /* @__PURE__ */ React.createElement("div", {
+    className: "p-8 pt-0"
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: " pl-8 my-4 p-4 flex w-full bg-opacity-75 bg-slate-800"
+  }, data.ticketListItems.length === 0 ? /* @__PURE__ */ React.createElement("p", {
+    className: "p-4 text-white"
+  }, "Feels Lonely In Here") : /* @__PURE__ */ React.createElement("ol", {
+    className: "w-full"
+  }, data.ticketListItems.map((ticket) => /* @__PURE__ */ React.createElement(import_react7.NavLink, {
+    to: "/tickets/" + ticket.id
+  }, /* @__PURE__ */ React.createElement("li", {
+    key: ticket.id,
+    className: "p-4 pb-8 w-full"
+  }, /* @__PURE__ */ React.createElement("h3", {
+    className: "text-2xl text-white font-thin hover:text-slate-600"
+  }, "#", ticket.id, " ", /* @__PURE__ */ React.createElement("span", {
+    className: "font-bold"
+  }, ticket.title)), /* @__PURE__ */ React.createElement("hr", null))))))));
+}
+function ErrorBoundary2({ error }) {
+  console.error(error);
+  return /* @__PURE__ */ React.createElement("div", null, "An unexpected error occurred: ", error.message);
+}
+function CatchBoundary2() {
+  const caught = (0, import_react7.useCatch)();
+  if (caught.status === 404) {
+    return /* @__PURE__ */ React.createElement("div", null, "User not found");
+  }
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
+}
+
+// route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/tickets.tsx
+var tickets_exports = {};
+__export(tickets_exports, {
+  default: () => TicketsPage,
+  loader: () => loader6
+});
+var import_node6 = require("@remix-run/node");
+var import_react8 = require("@remix-run/react");
+var React3 = __toESM(require("react"));
+var loader6 = async ({ request }) => {
+  const id_user = await requireUserId(request);
+  const ticketListItems = await getTicketListItems({ id_user });
+  return (0, import_node6.json)({ ticketListItems });
+};
+function TicketsPage() {
+  const data = (0, import_react8.useLoaderData)();
+  const user = useUser();
+  const profileURL = "/profile";
+  return /* @__PURE__ */ React3.createElement("div", {
     className: "flex h-full min-h-screen flex-col"
-  }, /* @__PURE__ */ React.createElement("header", {
+  }, /* @__PURE__ */ React3.createElement("header", {
     className: "flex items-center justify-between bg-purple-800 p-4 text-white"
-  }, /* @__PURE__ */ React.createElement("h1", {
+  }, /* @__PURE__ */ React3.createElement("h1", {
     className: "text-3xl font-bold"
-  }, /* @__PURE__ */ React.createElement(import_react7.Link, {
-    to: "."
-  }, "TIKIT")), /* @__PURE__ */ React.createElement(import_react7.Link, {
-    to: "/profile/'{data.profile.id}'",
+  }, /* @__PURE__ */ React3.createElement(import_react8.Link, {
+    to: "/tickets"
+  }, "TIKIT")), /* @__PURE__ */ React3.createElement(import_react8.Link, {
+    to: profileURL,
     className: "block p-4 text-xl text-white underline border-slate-900"
-  }, /* @__PURE__ */ React.createElement("p", {
+  }, /* @__PURE__ */ React3.createElement("p", {
     className: "text-white"
-  }, user.email)), /* @__PURE__ */ React.createElement(import_react7.Form, {
+  }, user.email)), /* @__PURE__ */ React3.createElement(import_react8.Form, {
     action: "/logout",
     method: "post"
-  }, /* @__PURE__ */ React.createElement("button", {
+  }, /* @__PURE__ */ React3.createElement("button", {
     type: "submit",
     className: "rounded bg-slate-600 py-2 px-4 text-blue-100 hover:bg-slate-500 active:bg-slate-600"
-  }, "Logout"))), /* @__PURE__ */ React.createElement("main", {
+  }, "Logout"))), /* @__PURE__ */ React3.createElement("main", {
     className: "flex h-full loginGradient"
-  }, /* @__PURE__ */ React.createElement("div", {
+  }, /* @__PURE__ */ React3.createElement("div", {
     className: "h-full w-80 border-r border-slate-900 bg-slate-800"
-  }, /* @__PURE__ */ React.createElement(import_react7.Link, {
+  }, /* @__PURE__ */ React3.createElement(import_react8.Link, {
     to: "new",
     className: "block p-4 text-xl text-white underline border-slate-900"
-  }, "Create Ticket"), /* @__PURE__ */ React.createElement("hr", null), data.ticketListItems.length === 0 ? /* @__PURE__ */ React.createElement("p", {
+  }, "Create Ticket"), /* @__PURE__ */ React3.createElement("hr", null), data.ticketListItems.length === 0 ? /* @__PURE__ */ React3.createElement("p", {
     className: "p-4 text-white"
-  }, "Feels Lonely In Here") : /* @__PURE__ */ React.createElement("ol", null, data.ticketListItems.map((ticket) => /* @__PURE__ */ React.createElement("li", {
+  }, "Feels Lonely In Here") : /* @__PURE__ */ React3.createElement("ol", null, data.ticketListItems.map((ticket) => /* @__PURE__ */ React3.createElement("li", {
     key: ticket.id
-  }, /* @__PURE__ */ React.createElement(import_react7.NavLink, {
+  }, /* @__PURE__ */ React3.createElement(import_react8.NavLink, {
     className: ({ isActive }) => `block border-b border-slate-900 p-4 text-white text-xl ${isActive ? "bg-purple-700 underline" : ""}`,
-    to: ticket.id
-  }, ticket.title))))), /* @__PURE__ */ React.createElement("div", {
+    to: "/tickets/" + ticket.id
+  }, ticket.title))))), /* @__PURE__ */ React3.createElement("div", {
     className: "flex-1 p-6"
-  }, /* @__PURE__ */ React.createElement(import_react7.Outlet, null))));
+  }, /* @__PURE__ */ React3.createElement(import_react8.Outlet, null))));
 }
 
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/tickets/$ticketId.tsx
 var ticketId_exports = {};
 __export(ticketId_exports, {
-  CatchBoundary: () => CatchBoundary2,
-  ErrorBoundary: () => ErrorBoundary2,
-  default: () => TicketDetailsPage2,
-  loader: () => loader6
+  CatchBoundary: () => CatchBoundary3,
+  ErrorBoundary: () => ErrorBoundary3,
+  default: () => TicketDetailsPage,
+  loader: () => loader7
 });
-var import_node6 = require("@remix-run/node");
-var import_react8 = require("@remix-run/react");
+var import_node7 = require("@remix-run/node");
+var import_react9 = require("@remix-run/react");
 var import_tiny_invariant3 = __toESM(require("tiny-invariant"));
-var loader6 = async ({ request, params }) => {
+var loader7 = async ({ request, params }) => {
   const id_user = await requireUserId(request);
   (0, import_tiny_invariant3.default)(params.ticketId, "ticketId not found");
   console.log(params.id);
@@ -557,10 +675,10 @@ var loader6 = async ({ request, params }) => {
   if (!ticket) {
     throw new Response("Not Found", { status: 404 });
   }
-  return (0, import_node6.json)({ ticket });
+  return (0, import_node7.json)({ ticket });
 };
-function TicketDetailsPage2() {
-  const data = (0, import_react8.useLoaderData)();
+function TicketDetailsPage() {
+  const data = (0, import_react9.useLoaderData)();
   return /* @__PURE__ */ React.createElement("div", {
     className: "p-8 h-full"
   }, /* @__PURE__ */ React.createElement("div", {
@@ -575,19 +693,19 @@ function TicketDetailsPage2() {
     className: " my-4 p-4 pt-8 flex w-full bg-opacity-75 text-white bg-slate-800"
   }, /* @__PURE__ */ React.createElement("p", {
     className: "py-6"
-  }, data.ticket.desc)), /* @__PURE__ */ React.createElement(import_react8.Form, {
+  }, data.ticket.desc)), /* @__PURE__ */ React.createElement(import_react9.Form, {
     method: "post"
   }, /* @__PURE__ */ React.createElement("button", {
     type: "submit",
     className: "rounded bg-slate-500  py-2 px-4 text-white hover:bg-slate-600 focus:bg-slate-400"
   }, "Delete")));
 }
-function ErrorBoundary2({ error }) {
+function ErrorBoundary3({ error }) {
   console.error(error);
   return /* @__PURE__ */ React.createElement("div", null, "An unexpected error occurred: ", error.message);
 }
-function CatchBoundary2() {
-  const caught = (0, import_react8.useCatch)();
+function CatchBoundary3() {
+  const caught = (0, import_react9.useCatch)();
   if (caught.status === 404) {
     return /* @__PURE__ */ React.createElement("div", null, "Note not found");
   }
@@ -598,17 +716,17 @@ function CatchBoundary2() {
 var tickets_exports2 = {};
 __export(tickets_exports2, {
   default: () => TicketsIndexPage,
-  loader: () => loader7
+  loader: () => loader8
 });
-var import_node7 = require("@remix-run/node");
-var import_react9 = require("@remix-run/react");
-var loader7 = async ({ request }) => {
+var import_node8 = require("@remix-run/node");
+var import_react10 = require("@remix-run/react");
+var loader8 = async ({ request }) => {
   const id_user = await requireUserId(request);
   const ticketListItems = await getTicketListItems({ id_user });
-  return (0, import_node7.json)({ ticketListItems });
+  return (0, import_node8.json)({ ticketListItems });
 };
 function TicketsIndexPage() {
-  const data = (0, import_react9.useLoaderData)();
+  const data = (0, import_react10.useLoaderData)();
   return /* @__PURE__ */ React.createElement("div", {
     className: "p-8 h-full"
   }, /* @__PURE__ */ React.createElement("div", {
@@ -620,7 +738,7 @@ function TicketsIndexPage() {
   }, data.ticketListItems.map((ticket) => /* @__PURE__ */ React.createElement("li", {
     className: "p-2 bg-purple-800 shadow-xl rounded",
     key: ticket.id
-  }, /* @__PURE__ */ React.createElement(import_react9.NavLink, {
+  }, /* @__PURE__ */ React.createElement(import_react10.NavLink, {
     className: ({ isActive }) => `block border-b border-slate-900 p-4 text-white text-xl ${isActive ? "bg-purple-700 underline" : ""}`,
     to: ticket.id
   }, ticket.title))))));
@@ -632,29 +750,29 @@ __export(new_exports, {
   action: () => action,
   default: () => NewTicketPage
 });
-var import_node8 = require("@remix-run/node");
-var import_react10 = require("@remix-run/react");
-var React2 = __toESM(require("react"));
+var import_node9 = require("@remix-run/node");
+var import_react11 = require("@remix-run/react");
+var React4 = __toESM(require("react"));
 var action = async ({ request }) => {
   const userId = await requireUserId(request);
   const formData = await request.formData();
   const title = formData.get("title");
   const desc = formData.get("desc");
   if (typeof title !== "string" || title.length === 0) {
-    return (0, import_node8.json)({ errors: { title: "Title is required" } }, { status: 400 });
+    return (0, import_node9.json)({ errors: { title: "Title is required" } }, { status: 400 });
   }
   if (typeof desc !== "string" || desc.length === 0) {
-    return (0, import_node8.json)({ errors: { desc: "desc is required" } }, { status: 400 });
+    return (0, import_node9.json)({ errors: { desc: "desc is required" } }, { status: 400 });
   }
   const ticket = await createTicket({ title, desc, userId });
-  return (0, import_node8.redirect)(`/tickets/${ticket.id}`);
+  return (0, import_node9.redirect)(`/tickets/${ticket.id}`);
 };
 function NewTicketPage() {
   var _a, _b, _c, _d, _e, _f;
-  const actionData = (0, import_react10.useActionData)();
-  const titleRef = React2.useRef(null);
-  const bodyRef = React2.useRef(null);
-  React2.useEffect(() => {
+  const actionData = (0, import_react11.useActionData)();
+  const titleRef = React4.useRef(null);
+  const bodyRef = React4.useRef(null);
+  React4.useEffect(() => {
     var _a2, _b2, _c2, _d2;
     if ((_a2 = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a2.title) {
       (_b2 = titleRef.current) == null ? void 0 : _b2.focus();
@@ -662,7 +780,7 @@ function NewTicketPage() {
       (_d2 = bodyRef.current) == null ? void 0 : _d2.focus();
     }
   }, [actionData]);
-  return /* @__PURE__ */ React2.createElement(import_react10.Form, {
+  return /* @__PURE__ */ React4.createElement(import_react11.Form, {
     method: "post",
     style: {
       display: "flex",
@@ -670,32 +788,32 @@ function NewTicketPage() {
       gap: 8,
       width: "100%"
     }
-  }, /* @__PURE__ */ React2.createElement("div", null, /* @__PURE__ */ React2.createElement("label", {
+  }, /* @__PURE__ */ React4.createElement("div", null, /* @__PURE__ */ React4.createElement("label", {
     className: "flex w-full flex-col gap-1"
-  }, /* @__PURE__ */ React2.createElement("span", null, "Title: "), /* @__PURE__ */ React2.createElement("input", {
+  }, /* @__PURE__ */ React4.createElement("span", null, "Title: "), /* @__PURE__ */ React4.createElement("input", {
     ref: titleRef,
     name: "title",
     className: "flex-1 rounded-md border-2 border-blue-500 px-3 text-lg leading-loose",
     "aria-invalid": ((_a = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a.title) ? true : void 0,
     "aria-errormessage": ((_b = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _b.title) ? "title-error" : void 0
-  })), ((_c = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _c.title) && /* @__PURE__ */ React2.createElement("div", {
+  })), ((_c = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _c.title) && /* @__PURE__ */ React4.createElement("div", {
     className: "pt-1 text-red-700",
     id: "title-error"
-  }, actionData.errors.title)), /* @__PURE__ */ React2.createElement("div", null, /* @__PURE__ */ React2.createElement("label", {
+  }, actionData.errors.title)), /* @__PURE__ */ React4.createElement("div", null, /* @__PURE__ */ React4.createElement("label", {
     className: "flex w-full flex-col gap-1"
-  }, /* @__PURE__ */ React2.createElement("span", null, "Body: "), /* @__PURE__ */ React2.createElement("textarea", {
+  }, /* @__PURE__ */ React4.createElement("span", null, "Body: "), /* @__PURE__ */ React4.createElement("textarea", {
     ref: bodyRef,
     name: "desc",
     rows: 8,
     className: "w-full flex-1 rounded-md border-2 border-blue-500 py-2 px-3 text-lg leading-6",
     "aria-invalid": ((_d = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _d.desc) ? true : void 0,
     "aria-errormessage": ((_e = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _e.desc) ? "body-error" : void 0
-  })), ((_f = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _f.desc) && /* @__PURE__ */ React2.createElement("div", {
+  })), ((_f = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _f.desc) && /* @__PURE__ */ React4.createElement("div", {
     className: "pt-1 text-red-700",
     id: "body-error"
-  }, actionData.errors.desc)), /* @__PURE__ */ React2.createElement("div", {
+  }, actionData.errors.desc)), /* @__PURE__ */ React4.createElement("div", {
     className: "text-right"
-  }, /* @__PURE__ */ React2.createElement("button", {
+  }, /* @__PURE__ */ React4.createElement("button", {
     type: "submit",
     className: "rounded bg-blue-500 py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
   }, "Save")));
@@ -705,14 +823,14 @@ function NewTicketPage() {
 var logout_exports = {};
 __export(logout_exports, {
   action: () => action2,
-  loader: () => loader8
+  loader: () => loader9
 });
-var import_node9 = require("@remix-run/node");
+var import_node10 = require("@remix-run/node");
 var action2 = async ({ request }) => {
   return logout(request);
 };
-var loader8 = async () => {
-  return (0, import_node9.redirect)("/");
+var loader9 = async () => {
+  return (0, import_node10.redirect)("/");
 };
 
 // route:/home/wtficctsn/PhpstormProjects/TIKIT/app/routes/index.tsx
@@ -720,7 +838,7 @@ var routes_exports = {};
 __export(routes_exports, {
   default: () => Index
 });
-var import_react11 = require("@remix-run/react");
+var import_react12 = require("@remix-run/react");
 function Index() {
   const user = useOptionalUser();
   return /* @__PURE__ */ React.createElement("main", {
@@ -745,15 +863,15 @@ function Index() {
     className: "mx-auto mt-6 max-w-lg text-center text-xl text-white sm:max-w-3xl"
   }, "Check the README.md file for instructions on how to get this project deployed."), /* @__PURE__ */ React.createElement("div", {
     className: "mx-auto mt-10 max-w-sm sm:flex sm:max-w-none sm:justify-center"
-  }, user ? /* @__PURE__ */ React.createElement(import_react11.Link, {
+  }, user ? /* @__PURE__ */ React.createElement(import_react12.Link, {
     to: "/tickets",
     className: "flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-purple-800 shadow-sm hover:bg-purple-50 sm:px-8"
   }, "View Tikets for ", user.email) : /* @__PURE__ */ React.createElement("div", {
     className: "space-y-4 sm:mx-auto sm:inline-grid sm:grid-cols-2 sm:gap-5 sm:space-y-0"
-  }, /* @__PURE__ */ React.createElement(import_react11.Link, {
+  }, /* @__PURE__ */ React.createElement(import_react12.Link, {
     to: "/join",
     className: "flex items-center justify-center rounded-md border border-transparent bg-white px-4 py-3 text-base font-medium text-purple-700 shadow-sm hover:bg-purple-50 sm:px-8"
-  }, "Sign up"), /* @__PURE__ */ React.createElement(import_react11.Link, {
+  }, "Sign up"), /* @__PURE__ */ React.createElement(import_react12.Link, {
     to: "/login",
     className: "flex items-center justify-center rounded-md bg-purple-500 px-4 py-3 font-medium text-white hover:bg-purple-600  "
   }, "Log In"))))))));
@@ -764,36 +882,36 @@ var login_exports = {};
 __export(login_exports, {
   action: () => action3,
   default: () => LoginPage,
-  loader: () => loader9,
-  meta: () => meta2
+  loader: () => loader10,
+  meta: () => meta3
 });
-var import_node10 = require("@remix-run/node");
-var import_react12 = require("@remix-run/react");
-var React3 = __toESM(require("react"));
-var loader9 = async ({ request }) => {
+var import_node11 = require("@remix-run/node");
+var import_react13 = require("@remix-run/react");
+var React5 = __toESM(require("react"));
+var loader10 = async ({ request }) => {
   const userId = await getUserId(request);
   if (userId)
-    return (0, import_node10.redirect)("/");
-  return (0, import_node10.json)({});
+    return (0, import_node11.redirect)("/");
+  return (0, import_node11.json)({});
 };
 var action3 = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
-  const redirectTo = safeRedirect(formData.get("redirectTo"), "/notes");
+  const redirectTo = safeRedirect(formData.get("redirectTo"), "/tickets");
   const remember = formData.get("remember");
   if (!validateEmail(email)) {
-    return (0, import_node10.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
   }
   if (typeof password !== "string") {
-    return (0, import_node10.json)({ errors: { password: "Password is required" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { password: "Password is required" } }, { status: 400 });
   }
   if (password.length < 8) {
-    return (0, import_node10.json)({ errors: { password: "Password is too short" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { password: "Password is too short" } }, { status: 400 });
   }
   const user = await verifyLogin(email, password);
   if (!user) {
-    return (0, import_node10.json)({ errors: { email: "Invalid email or password" } }, { status: 400 });
+    return (0, import_node11.json)({ errors: { email: "Invalid email or password" } }, { status: 400 });
   }
   return createUserSession({
     request,
@@ -802,19 +920,19 @@ var action3 = async ({ request }) => {
     redirectTo
   });
 };
-var meta2 = () => {
+var meta3 = () => {
   return {
     title: "Login"
   };
 };
 function LoginPage() {
   var _a, _b, _c, _d;
-  const [searchParams] = (0, import_react12.useSearchParams)();
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
-  const actionData = (0, import_react12.useActionData)();
-  const emailRef = React3.useRef(null);
-  const passwordRef = React3.useRef(null);
-  React3.useEffect(() => {
+  const [searchParams] = (0, import_react13.useSearchParams)();
+  const redirectTo = searchParams.get("redirectTo") || "/tickets";
+  const actionData = (0, import_react13.useActionData)();
+  const emailRef = React5.useRef(null);
+  const passwordRef = React5.useRef(null);
+  React5.useEffect(() => {
     var _a2, _b2, _c2, _d2;
     if ((_a2 = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a2.email) {
       (_b2 = emailRef.current) == null ? void 0 : _b2.focus();
@@ -822,19 +940,19 @@ function LoginPage() {
       (_d2 = passwordRef.current) == null ? void 0 : _d2.focus();
     }
   }, [actionData]);
-  return /* @__PURE__ */ React3.createElement("div", {
+  return /* @__PURE__ */ React5.createElement("div", {
     className: "flex min-h-full flex-col justify-center"
-  }, /* @__PURE__ */ React3.createElement("div", {
+  }, /* @__PURE__ */ React5.createElement("div", {
     className: "mx-auto w-full max-w-md px-8"
-  }, /* @__PURE__ */ React3.createElement(import_react12.Form, {
+  }, /* @__PURE__ */ React5.createElement(import_react13.Form, {
     method: "post",
     className: "space-y-6"
-  }, /* @__PURE__ */ React3.createElement("div", null, /* @__PURE__ */ React3.createElement("label", {
+  }, /* @__PURE__ */ React5.createElement("div", null, /* @__PURE__ */ React5.createElement("label", {
     htmlFor: "email",
     className: "block text-sm font-medium text-gray-700"
-  }, "Email address"), /* @__PURE__ */ React3.createElement("div", {
+  }, "Email address"), /* @__PURE__ */ React5.createElement("div", {
     className: "mt-1"
-  }, /* @__PURE__ */ React3.createElement("input", {
+  }, /* @__PURE__ */ React5.createElement("input", {
     ref: emailRef,
     id: "email",
     required: true,
@@ -845,15 +963,15 @@ function LoginPage() {
     "aria-invalid": ((_a = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a.email) ? true : void 0,
     "aria-describedby": "email-error",
     className: "w-full rounded border border-gray-500 px-2 py-1 text-lg"
-  }), ((_b = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _b.email) && /* @__PURE__ */ React3.createElement("div", {
+  }), ((_b = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _b.email) && /* @__PURE__ */ React5.createElement("div", {
     className: "pt-1 text-red-700",
     id: "email-error"
-  }, actionData.errors.email))), /* @__PURE__ */ React3.createElement("div", null, /* @__PURE__ */ React3.createElement("label", {
+  }, actionData.errors.email))), /* @__PURE__ */ React5.createElement("div", null, /* @__PURE__ */ React5.createElement("label", {
     htmlFor: "password",
     className: "block text-sm font-medium text-gray-700"
-  }, "Password"), /* @__PURE__ */ React3.createElement("div", {
+  }, "Password"), /* @__PURE__ */ React5.createElement("div", {
     className: "mt-1"
-  }, /* @__PURE__ */ React3.createElement("input", {
+  }, /* @__PURE__ */ React5.createElement("input", {
     id: "password",
     ref: passwordRef,
     name: "password",
@@ -862,31 +980,31 @@ function LoginPage() {
     "aria-invalid": ((_c = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _c.password) ? true : void 0,
     "aria-describedby": "password-error",
     className: "w-full rounded border border-gray-500 px-2 py-1 text-lg"
-  }), ((_d = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _d.password) && /* @__PURE__ */ React3.createElement("div", {
+  }), ((_d = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _d.password) && /* @__PURE__ */ React5.createElement("div", {
     className: "pt-1 text-red-700",
     id: "password-error"
-  }, actionData.errors.password))), /* @__PURE__ */ React3.createElement("input", {
+  }, actionData.errors.password))), /* @__PURE__ */ React5.createElement("input", {
     type: "hidden",
     name: "redirectTo",
     value: redirectTo
-  }), /* @__PURE__ */ React3.createElement("button", {
+  }), /* @__PURE__ */ React5.createElement("button", {
     type: "submit",
     className: "w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-  }, "Log in"), /* @__PURE__ */ React3.createElement("div", {
+  }, "Log in"), /* @__PURE__ */ React5.createElement("div", {
     className: "flex items-center justify-between"
-  }, /* @__PURE__ */ React3.createElement("div", {
+  }, /* @__PURE__ */ React5.createElement("div", {
     className: "flex items-center"
-  }, /* @__PURE__ */ React3.createElement("input", {
+  }, /* @__PURE__ */ React5.createElement("input", {
     id: "remember",
     name: "remember",
     type: "checkbox",
     className: "h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-  }), /* @__PURE__ */ React3.createElement("label", {
+  }), /* @__PURE__ */ React5.createElement("label", {
     htmlFor: "remember",
     className: "ml-2 block text-sm text-gray-900"
-  }, "Remember me")), /* @__PURE__ */ React3.createElement("div", {
+  }, "Remember me")), /* @__PURE__ */ React5.createElement("div", {
     className: "text-center text-sm text-gray-500"
-  }, "Don't have an account?", " ", /* @__PURE__ */ React3.createElement(import_react12.Link, {
+  }, "Don't have an account?", " ", /* @__PURE__ */ React5.createElement(import_react13.Link, {
     className: "text-blue-500 underline",
     to: {
       pathname: "/join",
@@ -900,37 +1018,40 @@ var join_exports = {};
 __export(join_exports, {
   action: () => action4,
   default: () => Join,
-  loader: () => loader10,
-  meta: () => meta3
+  loader: () => loader11,
+  meta: () => meta4
 });
-var import_node11 = require("@remix-run/node");
-var import_react13 = require("@remix-run/react");
-var React4 = __toESM(require("react"));
-var loader10 = async ({ request }) => {
+var import_node12 = require("@remix-run/node");
+var import_react14 = require("@remix-run/react");
+var React6 = __toESM(require("react"));
+var loader11 = async ({ request }) => {
   const userId = await getUserId(request);
   if (userId)
-    return (0, import_node11.redirect)("/");
-  return (0, import_node11.json)({});
+    return (0, import_node12.redirect)("/");
+  return (0, import_node12.json)({});
 };
 var action4 = async ({ request }) => {
   const formData = await request.formData();
   const email = formData.get("email");
   const password = formData.get("password");
+  const userType = formData.get("userType");
+  const firstName = formData.get("firstName");
+  const lastName = formData.get("lastName");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/");
   if (!validateEmail(email)) {
-    return (0, import_node11.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
+    return (0, import_node12.json)({ errors: { email: "Email is invalid" } }, { status: 400 });
   }
   if (typeof password !== "string") {
-    return (0, import_node11.json)({ errors: { password: "Password is required" } }, { status: 400 });
+    return (0, import_node12.json)({ errors: { password: "Password is required" } }, { status: 400 });
   }
   if (password.length < 8) {
-    return (0, import_node11.json)({ errors: { password: "Password is too short" } }, { status: 400 });
+    return (0, import_node12.json)({ errors: { password: "Password is too short" } }, { status: 400 });
   }
   const existingUser = await getUserByEmail(email);
   if (existingUser) {
-    return (0, import_node11.json)({ errors: { email: "A user already exists with this email" } }, { status: 400 });
+    return (0, import_node12.json)({ errors: { email: "A user already exists with this email" } }, { status: 400 });
   }
-  const user = await createTechnician(email, password);
+  const user = await createUser(email, password, userType, firstName, lastName);
   return createUserSession({
     request,
     userId: user.id,
@@ -938,39 +1059,86 @@ var action4 = async ({ request }) => {
     redirectTo
   });
 };
-var meta3 = () => {
+var meta4 = () => {
   return {
-    title: "Sign Up"
+    title: "Registar - TiKiT"
   };
 };
 function Join() {
-  var _a, _b, _c, _d;
-  const [searchParams] = (0, import_react13.useSearchParams)();
+  var _a, _b, _c, _d, _e, _f, _g, _h;
+  const [searchParams] = (0, import_react14.useSearchParams)();
   const redirectTo = searchParams.get("redirectTo") ?? void 0;
-  const actionData = (0, import_react13.useActionData)();
-  const emailRef = React4.useRef(null);
-  const passwordRef = React4.useRef(null);
-  React4.useEffect(() => {
-    var _a2, _b2, _c2, _d2;
+  const actionData = (0, import_react14.useActionData)();
+  const emailRef = React6.useRef(null);
+  const fNameRef = React6.useRef(null);
+  const lNameRef = React6.useRef(null);
+  const passwordRef = React6.useRef(null);
+  const UserTypeRef = React6.useRef(null);
+  React6.useEffect(() => {
+    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2;
     if ((_a2 = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a2.email) {
       (_b2 = emailRef.current) == null ? void 0 : _b2.focus();
     } else if ((_c2 = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _c2.password) {
       (_d2 = passwordRef.current) == null ? void 0 : _d2.focus();
+    } else if ((_e2 = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _e2.fname) {
+      (_f2 = fNameRef.current) == null ? void 0 : _f2.focus();
+    } else if ((_g2 = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _g2.lname) {
+      (_h2 = lNameRef.current) == null ? void 0 : _h2.focus();
     }
   }, [actionData]);
-  return /* @__PURE__ */ React4.createElement("div", {
+  return /* @__PURE__ */ React6.createElement("div", {
     className: "flex min-h-full flex-col justify-center"
-  }, /* @__PURE__ */ React4.createElement("div", {
+  }, /* @__PURE__ */ React6.createElement("div", {
     className: "mx-auto w-full max-w-md px-8"
-  }, /* @__PURE__ */ React4.createElement(import_react13.Form, {
+  }, /* @__PURE__ */ React6.createElement(import_react14.Form, {
     method: "post",
     className: "space-y-6"
-  }, /* @__PURE__ */ React4.createElement("div", null, /* @__PURE__ */ React4.createElement("label", {
+  }, /* @__PURE__ */ React6.createElement("div", {
+    className: "inline-flex gap-2"
+  }, /* @__PURE__ */ React6.createElement("div", null, /* @__PURE__ */ React6.createElement("label", {
+    htmlFor: "firstName",
+    className: "block text-sm font-medium text-gray-700"
+  }, "First Name:"), /* @__PURE__ */ React6.createElement("div", {
+    className: "mt-1"
+  }, /* @__PURE__ */ React6.createElement("input", {
+    ref: fNameRef,
+    id: "firstName",
+    required: true,
+    autoFocus: true,
+    name: "firstName",
+    type: "firstName",
+    autoComplete: "fname",
+    "aria-invalid": ((_a = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a.fname) ? true : void 0,
+    "aria-describedby": "email-error",
+    className: "w-full rounded border border-gray-500 px-2 py-1 text-lg"
+  }), ((_b = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _b.fname) && /* @__PURE__ */ React6.createElement("div", {
+    className: "pt-1 text-red-700",
+    id: "email-error"
+  }, actionData.errors.fname))), /* @__PURE__ */ React6.createElement("div", null, /* @__PURE__ */ React6.createElement("label", {
+    htmlFor: "lastName",
+    className: "block text-sm font-medium text-gray-700"
+  }, "Last Name:"), /* @__PURE__ */ React6.createElement("div", {
+    className: "mt-1"
+  }, /* @__PURE__ */ React6.createElement("input", {
+    ref: fNameRef,
+    id: "lastName",
+    required: true,
+    autoFocus: true,
+    name: "lastName",
+    type: "lastName",
+    autoComplete: "lname",
+    "aria-invalid": ((_c = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _c.lname) ? true : void 0,
+    "aria-describedby": "email-error",
+    className: "w-full rounded border border-gray-500 px-2 py-1 text-lg"
+  }), ((_d = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _d.lname) && /* @__PURE__ */ React6.createElement("div", {
+    className: "pt-1 text-red-700",
+    id: "email-error"
+  }, actionData.errors.lname)))), /* @__PURE__ */ React6.createElement("div", null, /* @__PURE__ */ React6.createElement("label", {
     htmlFor: "email",
     className: "block text-sm font-medium text-gray-700"
-  }, "Email address"), /* @__PURE__ */ React4.createElement("div", {
+  }, "Email address"), /* @__PURE__ */ React6.createElement("div", {
     className: "mt-1"
-  }, /* @__PURE__ */ React4.createElement("input", {
+  }, /* @__PURE__ */ React6.createElement("input", {
     ref: emailRef,
     id: "email",
     required: true,
@@ -978,41 +1146,64 @@ function Join() {
     name: "email",
     type: "email",
     autoComplete: "email",
-    "aria-invalid": ((_a = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _a.email) ? true : void 0,
+    "aria-invalid": ((_e = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _e.email) ? true : void 0,
     "aria-describedby": "email-error",
     className: "w-full rounded border border-gray-500 px-2 py-1 text-lg"
-  }), ((_b = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _b.email) && /* @__PURE__ */ React4.createElement("div", {
+  }), ((_f = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _f.email) && /* @__PURE__ */ React6.createElement("div", {
     className: "pt-1 text-red-700",
     id: "email-error"
-  }, actionData.errors.email))), /* @__PURE__ */ React4.createElement("div", null, /* @__PURE__ */ React4.createElement("label", {
+  }, actionData.errors.email))), /* @__PURE__ */ React6.createElement("div", null, /* @__PURE__ */ React6.createElement("label", {
     htmlFor: "password",
     className: "block text-sm font-medium text-gray-700"
-  }, "Password"), /* @__PURE__ */ React4.createElement("div", {
+  }, "Password"), /* @__PURE__ */ React6.createElement("div", {
     className: "mt-1"
-  }, /* @__PURE__ */ React4.createElement("input", {
+  }, /* @__PURE__ */ React6.createElement("input", {
     id: "password",
     ref: passwordRef,
     name: "password",
     type: "password",
     autoComplete: "new-password",
-    "aria-invalid": ((_c = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _c.password) ? true : void 0,
+    "aria-invalid": ((_g = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _g.password) ? true : void 0,
     "aria-describedby": "password-error",
     className: "w-full rounded border border-gray-500 px-2 py-1 text-lg"
-  }), ((_d = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _d.password) && /* @__PURE__ */ React4.createElement("div", {
+  }), ((_h = actionData == null ? void 0 : actionData.errors) == null ? void 0 : _h.password) && /* @__PURE__ */ React6.createElement("div", {
     className: "pt-1 text-red-700",
     id: "password-error"
-  }, actionData.errors.password))), /* @__PURE__ */ React4.createElement("input", {
+  }, actionData.errors.password))), /* @__PURE__ */ React6.createElement("div", null, /* @__PURE__ */ React6.createElement("label", {
+    htmlFor: "checkboxes",
+    className: "block text-sm font-medium text-gray-700"
+  }, " Tipo Utilizador: "), /* @__PURE__ */ React6.createElement("div", {
+    id: "checkboxes",
+    className: "inline-flex w-full"
+  }, /* @__PURE__ */ React6.createElement("label", {
+    className: "mr-6 p-6"
+  }, /* @__PURE__ */ React6.createElement("input", {
+    className: "mr-1",
+    name: "userType",
+    type: "radio",
+    value: "cl3ycqrmc0247ca2l92hfqbqv",
+    ref: UserTypeRef,
+    defaultChecked: true
+  }), "Technician"), /* @__PURE__ */ React6.createElement("label", {
+    className: "mr-6 p-6"
+  }, /* @__PURE__ */ React6.createElement("input", {
+    className: "mr-1",
+    ref: UserTypeRef,
+    name: "userType",
+    type: "radio",
+    value: "cl3ycqrmd0249ca2lv7d7pnri"
+  }), "Client"))), /* @__PURE__ */ React6.createElement("input", {
     type: "hidden",
     name: "redirectTo",
     value: redirectTo
-  }), /* @__PURE__ */ React4.createElement("button", {
+  }), /* @__PURE__ */ React6.createElement("button", {
     type: "submit",
     className: "w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-  }, "Create Account"), /* @__PURE__ */ React4.createElement("div", {
+  }, "Create Account"), /* @__PURE__ */ React6.createElement("div", {
     className: "flex items-center justify-center"
-  }, /* @__PURE__ */ React4.createElement("div", {
+  }, /* @__PURE__ */ React6.createElement("div", {
     className: "text-center text-sm text-gray-500"
-  }, "Already have an account?", " ", /* @__PURE__ */ React4.createElement(import_react13.Link, {
+  }, "Already have an account?", " ", /* @__PURE__ */ React6.createElement(import_react14.Link, {
     className: "text-blue-500 underline",
     to: {
       pathname: "/login",
@@ -1022,7 +1213,7 @@ function Join() {
 }
 
 // server-assets-manifest:@remix-run/dev/assets-manifest
-var assets_manifest_default = { "version": "a6656053", "entry": { "module": "/build/entry.client-3J3RMLVI.js", "imports": ["/build/_shared/chunk-VKMHGVMV.js", "/build/_shared/chunk-6BO74FWO.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-5OBI2UE5.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/healthcheck": { "id": "routes/healthcheck", "parentId": "root", "path": "healthcheck", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/healthcheck-DZ55A626.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-CHB6ULFH.js", "imports": ["/build/_shared/chunk-XT2SC2RF.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/join": { "id": "routes/join", "parentId": "root", "path": "join", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/join-DRQNCLH3.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-HNLD6IGX.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-PABHQ6ZK.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile": { "id": "routes/profile", "parentId": "root", "path": "profile", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile-TVL3R3EU.js", "imports": ["/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile/$profileId": { "id": "routes/profile/$profileId", "parentId": "routes/profile", "path": ":profileId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile/$profileId-TM2WNWWN.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets": { "id": "routes/tickets", "parentId": "root", "path": "tickets", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets-THASIMQZ.js", "imports": ["/build/_shared/chunk-XT2SC2RF.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/$ticketId": { "id": "routes/tickets/$ticketId", "parentId": "routes/tickets", "path": ":ticketId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/$ticketId-K57Q7CFM.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets/index": { "id": "routes/tickets/index", "parentId": "routes/tickets", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/tickets/index-LRPZHZBK.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/new": { "id": "routes/tickets/new", "parentId": "routes/tickets", "path": "new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/new-QXVQB473.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/userTypes": { "id": "routes/userTypes", "parentId": "root", "path": "userTypes", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/userTypes-EEOHBCM4.js", "imports": void 0, "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-A6656053.js" };
+var assets_manifest_default = { "version": "00d9d3ad", "entry": { "module": "/build/entry.client-CTZHR2LU.js", "imports": ["/build/_shared/chunk-LFKUBUPM.js", "/build/_shared/chunk-6BO74FWO.js"] }, "routes": { "root": { "id": "root", "parentId": void 0, "path": "", "index": void 0, "caseSensitive": void 0, "module": "/build/root-AXBRG3KJ.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/healthcheck": { "id": "routes/healthcheck", "parentId": "root", "path": "healthcheck", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/healthcheck-DZ55A626.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/index": { "id": "routes/index", "parentId": "root", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/index-QA3BVCOR.js", "imports": ["/build/_shared/chunk-PVLJMNHA.js"], "hasAction": false, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/join": { "id": "routes/join", "parentId": "root", "path": "join", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/join-4PQEKU2P.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/login": { "id": "routes/login", "parentId": "root", "path": "login", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/login-LVIOJZPV.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/logout": { "id": "routes/logout", "parentId": "root", "path": "logout", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/logout-PABHQ6ZK.js", "imports": void 0, "hasAction": true, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile": { "id": "routes/profile", "parentId": "root", "path": "profile", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile-SIQNR553.js", "imports": ["/build/_shared/chunk-DFG4XZEI.js", "/build/_shared/chunk-SVTFN5EC.js", "/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/profile/$profileId": { "id": "routes/profile/$profileId", "parentId": "routes/profile", "path": ":profileId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/profile/$profileId-W5ANUPFL.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/profile/index": { "id": "routes/profile/index", "parentId": "routes/profile", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/profile/index-T274IHDE.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets": { "id": "routes/tickets", "parentId": "root", "path": "tickets", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets-DUHEGS7D.js", "imports": ["/build/_shared/chunk-PVLJMNHA.js", "/build/_shared/chunk-SZXMSDPC.js", "/build/_shared/chunk-ME5PAYV3.js"], "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/$ticketId": { "id": "routes/tickets/$ticketId", "parentId": "routes/tickets", "path": ":ticketId", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/$ticketId-ZJGWGPVP.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": true, "hasErrorBoundary": true }, "routes/tickets/index": { "id": "routes/tickets/index", "parentId": "routes/tickets", "path": void 0, "index": true, "caseSensitive": void 0, "module": "/build/routes/tickets/index-EZ56SE4Y.js", "imports": void 0, "hasAction": false, "hasLoader": true, "hasCatchBoundary": false, "hasErrorBoundary": false }, "routes/tickets/new": { "id": "routes/tickets/new", "parentId": "routes/tickets", "path": "new", "index": void 0, "caseSensitive": void 0, "module": "/build/routes/tickets/new-D72ZUKJR.js", "imports": void 0, "hasAction": true, "hasLoader": false, "hasCatchBoundary": false, "hasErrorBoundary": false } }, "url": "/build/manifest-00D9D3AD.js" };
 
 // server-entry-module:@remix-run/dev/server-build
 var entry = { module: entry_server_exports };
@@ -1043,14 +1234,6 @@ var routes = {
     caseSensitive: void 0,
     module: healthcheck_exports
   },
-  "routes/userTypes": {
-    id: "routes/userTypes",
-    parentId: "root",
-    path: "userTypes",
-    index: void 0,
-    caseSensitive: void 0,
-    module: userTypes_exports
-  },
   "routes/profile": {
     id: "routes/profile",
     parentId: "root",
@@ -1066,6 +1249,14 @@ var routes = {
     index: void 0,
     caseSensitive: void 0,
     module: profileId_exports
+  },
+  "routes/profile/index": {
+    id: "routes/profile/index",
+    parentId: "routes/profile",
+    path: void 0,
+    index: true,
+    caseSensitive: void 0,
+    module: profile_exports2
   },
   "routes/tickets": {
     id: "routes/tickets",

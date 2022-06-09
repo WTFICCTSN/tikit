@@ -5,10 +5,12 @@ import { Form, Link, NavLink, Outlet, useLoaderData } from "@remix-run/react";
 import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 import { getTicketListItems } from "~/models/ticket.server";
-
+import * as React from "react";
 
 type LoaderData = {
+
     ticketListItems: Awaited<ReturnType<typeof getTicketListItems>>;
+
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -20,13 +22,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function TicketsPage() {
     const data = useLoaderData() as LoaderData;
     const user = useUser();
+    const profileURL = "/profile";
     return (
         <div className="flex h-full min-h-screen flex-col">
             <header className="flex items-center justify-between bg-purple-800 p-4 text-white">
                 <h1 className="text-3xl font-bold">
-                    <Link to=".">TIKIT</Link>
+                    <Link to="/tickets">TIKIT</Link>
                 </h1>
-                <Link to="/profile/'{data.profile.id}'" className="block p-4 text-xl text-white underline border-slate-900" >
+                <Link to={profileURL} className="block p-4 text-xl text-white underline border-slate-900" >
                     <p className="text-white">{user.email}</p>
                 </Link>
                 <Form action="/logout" method="post">
@@ -38,7 +41,6 @@ export default function TicketsPage() {
                     </button>
                 </Form>
             </header>
-
             <main className="flex h-full loginGradient">
                 <div className="h-full w-80 border-r border-slate-900 bg-slate-800">
                     <Link to="new" className="block p-4 text-xl text-white underline border-slate-900" >
@@ -53,11 +55,13 @@ export default function TicketsPage() {
                         <ol>
                             {data.ticketListItems.map((ticket) => (
                                 <li key={ticket.id}>
+
                                     <NavLink
                                         className={({ isActive }) =>
                                             `block border-b border-slate-900 p-4 text-white text-xl ${isActive ? "bg-purple-700 underline" : ""}`
                                         }
-                                        to={ticket.id}
+                                        to={"/tickets/"+ ticket.id}
+
                                     >
                                         {ticket.title}
                                     </NavLink>
@@ -72,5 +76,8 @@ export default function TicketsPage() {
                 </div>
             </main>
         </div>
+
+
+
     );
 }

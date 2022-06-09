@@ -4,13 +4,9 @@ import { prisma } from "~/db.server";
 
 export type { Profile } from "@prisma/client";
 //READ
-export function getProfile({
-                              id,
-                              id_user,
-                          }: Pick<Profile, "id"> & { id_user: User["id"];
-}) {
+export function getProfile( id_user: User["id"],) {
     return prisma.profile.findFirst({
-        where: { id, id_user },
+        where: { id_user },
         include: {
             profilePic : true,
             contacts : {

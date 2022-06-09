@@ -1,4 +1,4 @@
-import type { Password, User, UserType} from "@prisma/client";
+import type { Password, User, UserType, Profile} from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
@@ -9,44 +9,40 @@ export async function getUserById(id: User["id"]) {
   return prisma.user.findUnique({
       where: { id },
       include: {
-          userType: true
+          userType: true,
       }
   });
 }
 
 export async function getUserByEmail(email: User["email"]) {
-  return prisma.user.findUnique({where: {email}});
+  return prisma.user.findUnique({
+    where: {email},
+    include: {
+      userType: true,
+    }
+  });
 }
 // CREATE ---------------------------------------------------------------------------------------------
-export async function createUser(email: User["email"], password: string) {
+export async function createUser(email: User["email"], password: string, userType: User["id_userType"], fsName:string, lsName:string) {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   return prisma.user.create({
     data: {
-      email,
+      email : email,
+      id_userType: userType,
       password: {
         create: {
           hash: hashedPassword,
         },
       },
+      profile: {
+        create: {
+          first_name:fsName,
+          last_name:lsName,
+        },
+      }
     },
   });
-}
-
-export async function createTechnician(email: User["email"], password: string) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    return prisma.user.create({
-        data: {
-            email: email,
-            password: {
-                create: {
-                    hash: hashedPassword,
-                },
-            },
-            id_userType: "cl3ycqrmc0247ca2l92hfqbqv",
-        },
-    });
 }
 
 // DESTROY -----------------------------------------------------------------------------------------
