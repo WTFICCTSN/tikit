@@ -26,6 +26,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const meta: MetaFunction = () => {
     return {
         title: "User Profile - TiKiT",
+        charSet: "utf-8",
     };
 };
 export default function ProfileIndexPage() {
@@ -55,11 +56,15 @@ export default function ProfileIndexPage() {
 
             <main className="flex h-full loginGradient">
                 <div className="h-full w-80 border-r border-slate-900 bg-slate-800">
-                    <Link to="new" className="block p-4 text-xl text-white underline border-slate-900" >
-                        Create Ticket
-                    </Link>
-
-                    <hr />
+                    {data.user.userType.name == "Client" ? (
+                        <p className="text-3xl text-white">Tikets</p>
+                        ):(
+                            <><Link to="/tickets/new" className="block p-4 text-xl text-white underline border-slate-900">
+                                Create Ticket
+                            </Link>
+                                <hr/>
+                            </>
+                    )};
 
                     {data.ticketListItems.length === 0 ? (
                         <p className="p-4 text-white">Feels Lonely In Here</p>

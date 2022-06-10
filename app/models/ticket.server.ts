@@ -1,7 +1,6 @@
-import type { User, Ticket } from "@prisma/client";
+import type { User, Ticket, PriorityType, Machine } from "@prisma/client";
 
 import { prisma } from "~/db.server";
-// import {Ticket} from "@prisma/client";
 
 export type { Ticket } from "@prisma/client";
 //READ
@@ -23,23 +22,44 @@ export function getTicketListItems({ id_user }: { id_user: User["id"] }) {
         orderBy: { updatedAt: "desc" },
     });
 }
-//Create
-export function createTicket({
-                               title,
-                               desc,
-                               userId,
 
-                           }: Pick<Ticket, "title" | "desc"> & {
-    userId: User["id"];
-}) {
+export function getPriorityTypes(){
+    return prisma.priorityType.findMany()
+}
+
+//Create
+export function createTicket({   title,
+                                 desc,
+                                 techId ,
+                                 clientId,
+                                 prioridadeN,
+                                 } :
+                                 {
+                                  title: Ticket["title"],
+                                  techId: User["id"] ,
+                                  desc: Ticket["desc"],
+                                  clientId : User["id"],
+                                  prioridadeN : PriorityType["name"],
+                                  client_machine : Machine["id"] }
+) {
     return prisma.ticket.create({
         data: {
             title,
             desc,
-            user: {
+            prioridade: {
+              connect: {
+                    name : prioridadeN,
+                  }
+              },
+            client: {
                 connect: {
-                    id: userId,
+                    id : clientId,
                 },
+            },
+            technician:{
+                connect:{
+                    id: techId,
+                }
             },
         },
     });

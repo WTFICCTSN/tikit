@@ -2,6 +2,8 @@ import type { Password, User, UserType, Profile} from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "~/db.server";
+import {Simulate} from "react-dom/test-utils";
+import select = Simulate.select;
 
 export type { User } from "@prisma/client";
 // READ ------------------------------------------------------------------------------------------------
@@ -22,6 +24,21 @@ export async function getUserByEmail(email: User["email"]) {
     }
   });
 }
+
+export async function getUsersByUserType (name : UserType["name"]){
+  return prisma.user.findMany({
+    where: {
+      userType:{
+        name: name,
+      }
+    },include : {
+      profile: true,
+      userType: true,
+    }
+
+  })
+}
+
 // CREATE ---------------------------------------------------------------------------------------------
 export async function createUser(email: User["email"], password: string, userType: User["id_userType"], fsName:string, lsName:string) {
   const hashedPassword = await bcrypt.hash(password, 10);

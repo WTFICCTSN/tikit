@@ -60,21 +60,25 @@ async function seed() {
 
     const priorityType_LOW = await prisma.priorityType.create({
         data:{
+            id: 0,
             name: "Low",
         }
     })
     const priorityType_Media = await prisma.priorityType.create({
         data:{
+            id: 1,
             name: "Medium",
         }
     })
     const priorityType_High = await prisma.priorityType.create({
         data:{
+            id: 2,
             name: "High",
         }
     })
     const priorityType_Critica = await prisma.priorityType.create({
         data:{
+            id: 3,
             name: "Critical",
         }
     })

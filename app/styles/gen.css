@@ -1,3 +1,7 @@
 .loginGradient {
     background-image: linear-gradient(37deg, rgb(32, 218, 233),rgb(40, 21, 236));
 }
+.profile {
+    width: 320px;
+    aspect-ratio: auto;
+}

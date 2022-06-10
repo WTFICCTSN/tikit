@@ -6,17 +6,19 @@ import { requireUserId } from "~/session.server";
 import { useUser } from "~/utils";
 import { getTicketListItems } from "~/models/ticket.server";
 import * as React from "react";
+import {getUserById} from "~/models/user.server";
 
 type LoaderData = {
 
     ticketListItems: Awaited<ReturnType<typeof getTicketListItems>>;
-
+    user : Awaited<ReturnType<typeof getUserById>>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
     const id_user = await requireUserId(request);
+    const user = await getUserById(id_user);
     const ticketListItems = await getTicketListItems({ id_user });
-    return json<LoaderData>({ ticketListItems });
+    return json<LoaderData>({ user, ticketListItems });
 };
 
 export default function TicketsPage() {
@@ -43,14 +45,17 @@ export default function TicketsPage() {
             </header>
             <main className="flex h-full loginGradient">
                 <div className="h-full w-80 border-r border-slate-900 bg-slate-800">
-                    <Link to="new" className="block p-4 text-xl text-white underline border-slate-900" >
-                        Create Ticket
-                    </Link>
-
-                    <hr />
-
+                    {data.user.userType.name == "Client" ? (
+                        <p className="text-3xl text-white">Feels Lonely In Here</p>
+                    ):(
+                        <><Link to="/tickets/new" className="block p-4 text-xl text-white underline border-slate-900">
+                            Create Ticket
+                        </Link>
+                            <hr/>
+                        </>
+                    )};
                     {data.ticketListItems.length === 0 ? (
-                        <p className="p-4 text-white">Feels Lonely In Here</p>
+                        <p className="p-4 text-white">Sem Tickets Atribuidos</p>
                     ) : (
                         <ol>
                             {data.ticketListItems.map((ticket) => (

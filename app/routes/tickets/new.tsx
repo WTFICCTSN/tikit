@@ -1,23 +1,54 @@
 import type { ActionFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useActionData } from "@remix-run/react";
+import {json, LoaderFunction, redirect} from "@remix-run/node";
+import {Form, NavLink, useActionData, useLoaderData} from "@remix-run/react";
 import * as React from "react";
 
-import { createTicket } from "~/models/ticket.server";
+import {Machine, Ticket} from "@prisma/client";
+import { User } from "@prisma/client";
+
+import {createTicket, getTicketListItems} from "~/models/ticket.server";
+import { getPriorityTypes } from "~/models/ticket.server";
 import { requireUserId } from "~/session.server";
+import is from "@sindresorhus/is";
+import integer = is.integer;
+import {getUsersByUserType} from "~/models/user.server";
+import {getAllMachines, getMachineListItems} from "~/models/machine.server";
+
+
+type LoaderData = {
+    priorityTypes: Awaited<ReturnType<typeof getPriorityTypes>>;
+    technicians: Awaited<ReturnType<typeof getUsersByUserType>>;
+    clients : Awaited<ReturnType<typeof getUsersByUserType>>;
+    machines : Awaited<ReturnType<typeof getAllMachines>>;
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+    const id_user = await requireUserId(request);
+    const technicians = await getUsersByUserType("Technician");
+    const clients = await getUsersByUserType("Client");
+    const priorityTypes = await getPriorityTypes();
+    const machines = await getAllMachines()
+
+    return json<LoaderData>({ priorityTypes, technicians, clients,machines });
+};
 
 type ActionData = {
     errors?: {
         title?: string;
         desc?: string;
+        clients ?: string;
     };
 };
+
 export const action: ActionFunction = async ({ request }) => {
     const userId = await requireUserId(request);
-
     const formData = await request.formData();
     const title = formData.get("title");
     const desc = formData.get("desc");
+    let prioridadeN = formData.get("priority");
+    let techId = userId;
+    let clientId= formData.get("clients");
+
 
     if (typeof title !== "string" || title.length === 0) {
         return json<ActionData>(
@@ -32,16 +63,30 @@ export const action: ActionFunction = async ({ request }) => {
             { status: 400 }
         );
     }
+    if (typeof prioridadeN !== "number" || desc.length === 0){
+        return json<ActionData>(
+            { errors: { desc: "priority is required" } },
+            { status: 400 }
+        );
+    }
 
-    const ticket = await createTicket({ title, desc, userId });
+
+
+    const ticket = await createTicket({ title, desc, techId,clientId,prioridadeN });
 
     return redirect(`/tickets/${ticket.id}`);
 };
 
 export default function NewTicketPage() {
+    const data = useLoaderData() as LoaderData;
     const actionData = useActionData() as ActionData;
     const titleRef = React.useRef<HTMLInputElement>(null);
     const bodyRef = React.useRef<HTMLTextAreaElement>(null);
+    const priorityRef = React.useRef<HTMLInputElement>(null);
+    const clientsRef = React.useRef<HTMLSelectElement>(null);
+    const machinesRef = React.useRef<HTMLSelectElement>(null);
+
+
 
     React.useEffect(() => {
         if (actionData?.errors?.title) {
@@ -80,7 +125,41 @@ export default function NewTicketPage() {
                     </div>
                 )}
             </div>
-
+            <div>
+                <label htmlFor="checkboxes" className="block text-sm font-medium text-gray-700"> Prioridade: </label>
+                <div id="checkboxes" className="inline-flex w-full">
+                        <p className="p-4 text-white">No priorities</p>
+                            {data.priorityTypes.map((prioridade) => (
+                                    <label className="mr-6 p-6">
+                                        <input className="mr-1" name="priority" type="radio" value={prioridade.name} ref={priorityRef} defaultChecked={true} />
+                                        {prioridade.name}
+                                    </label>
+                            ))}
+                </div>
+            </div>
+            <div>
+                <label htmlFor="clients" className="block text-sm font-medium text-gray-700"> Clients </label>
+                <select name="clients" onSelect={machinesRef.current.options=} ref={clientsRef}>
+                    {data.clients.map((client) => (
+                        <option value={client.id}>{client.profile.first_name} {client.profile.last_name}</option>
+                    ))};
+                </select>
+            </div>
+            <label htmlFor="Machines" className="block text-sm font-medium text-gray-700"> Machine </label>
+            <select name="Machines" ref={machinesRef}>
+                {data.machines.map((machine) => (
+                    <option value={machine.id}>{machine.title}</option>
+                ))};
+            </select>
+            <div>
+                {/*}
+                <label htmlFor="Machines" className="block text-sm font-medium text-gray-700"> Machine </label>
+                <select name="Machines" ref={clientsRef}>
+                    {data.clients.map((client) => (
+                        <option value={client.users.profile.id_user}>{client.users.profile.first_name} + ' ' + {client.users.profile.last_name}</option>
+                    ))};
+                </select> */}
+            </div>
             <div>
                 <label className="flex w-full flex-col gap-1">
                     <span>Body: </span>
