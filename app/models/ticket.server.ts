@@ -28,6 +28,7 @@ export function createTicket({
                                title,
                                desc,
                                userId,
+
                            }: Pick<Ticket, "title" | "desc"> & {
     userId: User["id"];
 }) {

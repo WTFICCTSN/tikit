@@ -10,26 +10,17 @@ async function seed() {
     const hashedPassword = await bcrypt.hash("qwerty1234", 10);
 
     // Limpar DB's
-    console.log("Limpar a DB SQLITE -------------------------------------------------")
     await prisma.password.deleteMany();
-    console.log("Passwords");
     await prisma.image.deleteMany();
-    console.log("Image");
-
+    await prisma.priorityType.deleteMany();
+    await prisma.imageFromTicket.deleteMany();
+    await prisma.machine.deleteMany();
     await prisma.contactsOnProfile.deleteMany();
-    console.log("ContactOnProfile");
     await prisma.contact.deleteMany();
-    console.log("Contact");
     await prisma.profile.deleteMany();
-    console.log("Profile");
     await prisma.ticket.deleteMany();
-    console.log("Tickets")
     await prisma.userType.deleteMany();
-    console.log("userType")
     await prisma.user.deleteMany();
-    console.log("User");
-    console.log("---------------------------------------------------------------------")
-
 
     // Default UserTypes
     // -----------------------------------------------
@@ -57,7 +48,43 @@ async function seed() {
             name: "Admin",
         }
     });
+    // Default priorityType
+    // -----------------------------------------------
+    // | ID                          | Name          |
+    // |-----------------------------|---------------|
+    // | 0                           | Low           |
+    // | 1                           | Medium        |
+    // | 2                           | High          |
+    // | 3                           | Critical      |
+    // -----------------------------------------------
 
+    const priorityType_LOW = await prisma.priorityType.create({
+        data:{
+            name: "Low",
+        }
+    })
+    const priorityType_Media = await prisma.priorityType.create({
+        data:{
+            name: "Medium",
+        }
+    })
+    const priorityType_High = await prisma.priorityType.create({
+        data:{
+            name: "High",
+        }
+    })
+    const priorityType_Critica = await prisma.priorityType.create({
+        data:{
+            name: "Critical",
+        }
+    })
+    // Default user
+    // ---------------------------------------------------------------
+    // | Email                          | Password   | UserType      |
+    // |--------------------------------|------------|---------------|
+    // | borkbork@nom.nom               | querty1234 | Technician    |
+    // | cliente@1.1                    | querty1234 | Client        |
+    // ---------------------------------------------------------------
     const user_tech = await prisma.user.create({
        data: {
            email: email,
@@ -144,11 +171,7 @@ async function seed() {
 
         }
     })
-
-
 }
-
-
 seed()
     .catch((e) => {
         console.error(e);

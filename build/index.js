@@ -126,6 +126,7 @@ async function getUserByEmail(email) {
 }
 async function createUser(email, password, userType, fsName, lsName) {
   const hashedPassword = await import_bcryptjs.default.hash(password, 10);
+  const hashedEmail = await import_bcryptjs.default.hash(email, 10);
   return prisma.user.create({
     data: {
       email,
@@ -138,7 +139,27 @@ async function createUser(email, password, userType, fsName, lsName) {
       profile: {
         create: {
           first_name: fsName,
-          last_name: lsName
+          last_name: lsName,
+          profilePic: {
+            create: {
+              name: fsName.toLowerCase() + "-" + lsName.toLowerCase() + "_profile",
+              url: "https://www.gravatar.com/avatar/" + hashedEmail + "?s=320&d=identicon&r=PG",
+              createdBy: fsName + " " + lsName
+            }
+          },
+          contacts: {
+            create: {
+              assignedBy: fsName + " " + lsName,
+              contact: {
+                create: {
+                  email: true,
+                  phone: false,
+                  name: "Email",
+                  info: email
+                }
+              }
+            }
+          }
         }
       }
     }

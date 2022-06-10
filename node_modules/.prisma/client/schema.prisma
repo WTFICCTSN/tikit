@@ -23,9 +23,11 @@ model User {
   userType    UserType? @relation(fields: [id_userType], references: [id], onDelete: Cascade, onUpdate: Cascade)
   id_userType String?
 
-  profile  Profile?
-  password Password?
-  Ticket   Ticket[]
+  profile            Profile?
+  password           Password?
+  Tickets_Client     Ticket[]  @relation("Cliente")
+  Tickets_Technician Ticket[]  @relation("Tecnico")
+  Machine            Machine[]
 }
 
 model Password {
@@ -54,12 +56,14 @@ model Profile {
   user    User   @relation(fields: [id_user], references: [id])
   id_user String @unique
 
-  profilePic Image?  @relation(fields: [id_pic], references: [id])
+  profilePic Image?  @relation(fields: [id_pic], references: [id], onDelete: Cascade, onUpdate: Cascade)
   id_pic     String? @unique
+
+  machines Machine[]
 }
 
 model ContactsOnProfile {
-  contact    Contact  @relation(fields: [id_contact], references: [id])
+  contact    Contact  @relation(fields: [id_contact], references: [id], onDelete: Cascade, onUpdate: Cascade)
   id_contact String
   profile    Profile  @relation(fields: [id_profile], references: [id])
   id_profile String
@@ -80,45 +84,63 @@ model Image {
 }
 
 model PriorityType {
-  id    String @id @default(cuid())
-  name  String @unique
-//  Ticket Ticket[]
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  Ticket Ticket[]
+}
+
+model Machine {
+  id   String @id @default(cuid())
+  name String
+
+  user    User   @relation(fields: [id_user], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_user String
+
+  tickets Ticket[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?
 }
 
 model Ticket {
-  id    String @id @default(cuid())
+  id    Int    @id @default(autoincrement())
   title String @unique
   desc  String
 
   imagens ImageFromTicket[]
 
-  parentTicket Ticket? @relation("Subtickets", fields: [id_ticket], references: [id])
-  id_ticket    String?
+  parentTicket Ticket? @relation("Subtickets", fields: [id_ticket], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_ticket    Int?
 
   subtickets Ticket[] @relation("Subtickets")
 
-  user    User   @relation(fields: [id_user], references: [id])
-  id_user String
+  technician  User?        @relation("Tecnico", fields: [id_tech], references: [id])
+  id_tech     String?
+  client      User         @relation("Cliente", fields: [id_user], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_user     String
+  pioridade   PriorityType @relation(fields: [id_priority], references: [id])
+  id_priority Int
 
-//  pioridade PriorityType @relation(fields: [id_priority], references: [id])
-//  id_priority String
+  machine    Machine? @relation(fields: [id_machine], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_machine String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 model ImageFromTicket {
-  ticket     Ticket   @relation(fields: [id_ticket], references: [id])
-  id_ticket  String
-  imagem     Image    @relation(fields: [id_imagem], references: [id])
+  ticket     Ticket   @relation(fields: [id_ticket], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id_ticket  Int
+  imagem     Image    @relation(fields: [id_imagem], references: [id], onDelete: Cascade, onUpdate: Cascade)
   id_imagem  String
   assignedAt DateTime @default(now())
   assignedBy String
 
   @@id([id_ticket, id_imagem])
 }
-
-
 
 //model Component {
 //  id              String            @id @default(cuid())
@@ -151,18 +173,6 @@ model ImageFromTicket {
 // @@id([id_spec, id_comp])
 //}
 
-//model Machine {
-//  id         String @id @default(cuid())
-//  name       String
-//  factory_id String
-//
-//  specs     Specification[]
-//  tickets   Ticket[]
-//  type      MachineType?    @relation(fields: [id_type], references: [id])
-//  id_type   String
-//  createdAt DateTime        @default(now())
-//  updatedAt DateTime        @updatedAt
-//}
 //
 //model MachineSpecification{
 //      machine    Contact  @relation(fields: [id_machine], references: [id])
